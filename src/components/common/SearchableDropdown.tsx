@@ -68,7 +68,7 @@ export default function SearchableDropdown({ options, value, onChange, placehold
                   option === value ? 'bg-blue-100' : ''
                 }`}
                 onMouseDown={(e) => {
-                  e.preventDefault();  // prevent blur
+                  e.preventDefault();
                   onChange(option);
                   setSearchTerm('');
                   setIsOpen(false);

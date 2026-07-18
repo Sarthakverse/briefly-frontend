@@ -1,47 +1,9 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
-import SearchableDropdown from '../components/SearchableDropdown';
-
-const DEPARTMENTS = [
-  'Smart Integration (API) - Delivery',
-  'Cloud Development Delivery',
-  // Add more as needed
-];
-
-const DESIGNATIONS = [
-  'Trainee (TR)',
-  'Associate (AC)',
-  'Associate Specialist (ASP)',
-  'Specialist (SP)',
-  'Senior Specialist (SS)',
-  'Lead (LD)',
-  'Associate Manager (AMG)',
-  'Manager (MG)',
-  'Senior Manager (SM)',
-  'Director (DR)',
-  'Senior Director (SD)',
-  'Vice President (VP)',
-  'Software Engineer (SWE)',
-  'Senior Software Engineer (SSWE)',
-  // Add more as needed
-];
-
-const OFFICE_LOCATIONS = [
-  'San Jose',
-  'Dallas',
-  'Vancouver',
-  'Bangalore',
-  'Noida',
-  'Mumbai',
-  'Pune',
-  'London',
-  'Frankfurt',
-  'Dubai',
-  'Singapore',
-  'Kuala Lumpur',
-];
+import SearchableDropdown from '../../components/common/SearchableDropdown';
+import { DEPARTMENTS, DESIGNATIONS, OFFICE_LOCATIONS } from '../../constants';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -61,18 +23,15 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Validation functions
   const validateName = (val: string) => {
     if (!val.trim()) return 'Full name is required';
     return '';
   };
-
   const validateEmail = (val: string) => {
     if (!val) return 'Email is required';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) return 'Please enter a valid email';
     return '';
   };
-
   const validatePassword = (val: string) => {
     if (!val) return 'Password is required';
     if (val.length < 8) return 'At least 8 characters';
@@ -81,7 +40,6 @@ export default function Register() {
     if (!/[0-9]/.test(val)) return 'Must contain a digit';
     return '';
   };
-
   const validateConfirmPassword = (val: string) => {
     if (!val) return 'Please confirm your password';
     if (val !== formData.password) return 'Passwords do not match';
@@ -90,14 +48,12 @@ export default function Register() {
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Run validation for the field
     let error = '';
     switch (field) {
       case 'name': error = validateName(value); break;
       case 'email': error = validateEmail(value); break;
       case 'password':
         error = validatePassword(value);
-        // Also re‑validate confirm password if it's set
         if (formData.confirmPassword) {
           const confirmErr = validateConfirmPassword(formData.confirmPassword);
           setErrors(prev => ({ ...prev, confirmPassword: confirmErr }));
@@ -109,11 +65,10 @@ export default function Register() {
     setErrors(prev => ({ ...prev, [field]: error }));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setApiError('');
 
-    // Run all validations
     const newErrors: Record<string, string> = {
       name: validateName(formData.name),
       email: validateEmail(formData.email),
@@ -153,7 +108,6 @@ export default function Register() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Full Name */}
           <div>
             <label className="block text-sm font-medium text-gray-600">Full Name *</label>
             <input
@@ -167,7 +121,6 @@ export default function Register() {
             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
           </div>
 
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-600">Email *</label>
             <input
@@ -181,7 +134,6 @@ export default function Register() {
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
 
-          {/* Password & Confirm */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-600">Password *</label>
@@ -219,7 +171,6 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Department (searchable dropdown) */}
           <div>
             <label className="block text-sm font-medium text-gray-600">Department</label>
             <SearchableDropdown
@@ -230,7 +181,6 @@ export default function Register() {
             />
           </div>
 
-          {/* Designation (simple dropdown) */}
           <div>
             <label className="block text-sm font-medium text-gray-600">Designation</label>
             <select
@@ -243,7 +193,6 @@ export default function Register() {
             </select>
           </div>
 
-          {/* Phone */}
           <div>
             <label className="block text-sm font-medium text-gray-600">Phone Number</label>
             <input
@@ -254,7 +203,6 @@ export default function Register() {
             />
           </div>
 
-          {/* Office Location (dropdown) */}
           <div>
             <label className="block text-sm font-medium text-gray-600">Office Location</label>
             <select

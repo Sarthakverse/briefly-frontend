@@ -1,12 +1,35 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+
 import { AuthProvider } from './context/AuthContext';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/layout/Layout';
+
+import Login from './features/auth/Login';
+import Register from './features/auth/Register';
+import ForgotPassword from './features/auth/ForgotPassword';
+
+import Home from './features/home/Home';
+import AdapterList from './features/adapters/AdapterList';
+import Upload from './features/upload/Upload';
+import ReleaseList from './features/releases/ReleaseList';
+import EnhancementList from './features/enhancements/EnhancementList';
+import MeetingList from './features/meetings/MeetingList';
+import MeetingView from './features/meetings/MeetingView';
+import ProcessingPage from './features/upload/ProcessingPage';
+
+function PageTransition({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -14,84 +37,101 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Public routes */}
         <Route
           path="/login"
           element={
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
+            <PageTransition>
               <Login />
-            </motion.div>
+            </PageTransition>
           }
         />
 
         <Route
           path="/register"
           element={
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
+            <PageTransition>
               <Register />
-            </motion.div>
+            </PageTransition>
           }
         />
 
         <Route
           path="/forgot-password"
           element={
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
+            <PageTransition>
               <ForgotPassword />
-            </motion.div>
+            </PageTransition>
           }
         />
 
-        <Route
-          path="/reset-password"
-          element={
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <ResetPassword />
-            </motion.div>
-          }
-        />
-
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
+        {/* Protected routes */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
+          <Route
+            index
+            element={
+              <PageTransition>
                 <Home />
-              </motion.div>
-            </ProtectedRoute>
-          }
-        />
+              </PageTransition>
+            }
+          />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+          <Route
+            path="adapters"
+            element={
+              <PageTransition>
+                <AdapterList />
+              </PageTransition>
+            }
+          />
+
+          <Route
+            path="adapters/:adapterId/releases"
+            element={
+              <PageTransition>
+                <ReleaseList />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="releases/:releaseId/enhancements"
+            element={
+              <PageTransition>
+                <EnhancementList />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="enhancements/:enhancementId/meetings"
+            element={<PageTransition><MeetingList /></PageTransition>}
+          />
+          <Route
+              path="meetings/:meetingId"
+              element={<PageTransition><MeetingView /></PageTransition>}
+            />
+          <Route
+            path="upload"
+            element={
+              <PageTransition>
+                <Upload />
+              </PageTransition>
+            }
+          />
+        </Route>
+
+        <Route path="processing/:meetingId" element={<PageTransition><ProcessingPage /></PageTransition>}/>
       </Routes>
     </AnimatePresence>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -100,5 +140,3 @@ function App() {
     </AuthProvider>
   );
 }
-
-export default App;

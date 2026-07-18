@@ -1,24 +1,14 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import api from '../lib/axios';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  department: string | null;
-  designation: string | null;
-  phone: string | null;
-  officeLocation: string | null;
-  role: string;
-}
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import type { User } from '../types';
+import { loginUser, registerUser, getProfile, refreshAccessToken, logoutApi } from '../features/auth/authApi';
 
 interface AuthContextType {
   user: User | null;
-  token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (data: SignupData) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 interface SignupData {
@@ -35,46 +25,84 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
-  // Fetch user profile on mount if token exists
   useEffect(() => {
-    if (token) {
-      api.get('/auth/me')
-        .then((res) => setUser(res.data))
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      getProfile()
+        .then((user) => {
+          setUser(user);
+          localStorage.setItem('userName', user.name); // ✅ Added
+        })
         .catch(() => {
-          localStorage.removeItem('token');
-          setToken(null);
+          const refreshToken = localStorage.getItem('refreshToken');
+          if (refreshToken) {
+            refreshAccessToken(refreshToken)
+              .then(res => {
+                localStorage.setItem('accessToken', res.accessToken);
+                localStorage.setItem('refreshToken', res.refreshToken);
+                setUser(res.user);
+                localStorage.setItem('userName', res.user.name); // ✅ Added
+              })
+              .catch(() => {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('userName'); // clean up
+                setUser(null);
+              });
+          } else {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('userName');
+            setUser(null);
+          }
         })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await api.post('/auth/login', { email, password });
-    localStorage.setItem('token', res.data.token);
-    setToken(res.data.token);
-    setUser(res.data.user);
+    const res = await loginUser(email, password);
+    localStorage.setItem('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    localStorage.setItem('userName', res.user.name); // ✅ Added
+    setUser(res.user);
   };
 
   const register = async (data: SignupData) => {
-    const res = await api.post('/auth/signup', data);
-    localStorage.setItem('token', res.data.token);
-    setToken(res.data.token);
-    setUser(res.data.user);
+    const payload = {
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      department: data.department || '',
+      designation: data.designation || '',
+      phone: data.phone || '',
+      officeLocation: data.officeLocation || '',
+    };
+    const res = await registerUser(payload);
+    localStorage.setItem('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    localStorage.setItem('userName', res.user.name); 
+    setUser(res.user);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
+  const logout = async () => {
+    try {
+      await logoutApi();
+    } catch (e) {
+      // ignore
+    }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userName');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

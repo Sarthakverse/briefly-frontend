@@ -1,6 +1,6 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function Login() {
@@ -12,7 +12,6 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Real‑time validation
   const validateEmail = (value: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!value) return 'Email is required';
@@ -37,7 +36,7 @@ export default function Login() {
     setErrors((prev) => ({ ...prev, password: validatePassword(val) }));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setApiError('');
 
@@ -59,7 +58,6 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:shadow-2xl">
-        {/* Logo & Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Briefly AI</h1>
           <p className="text-gray-500 mt-1">Thrive with Change</p>
@@ -74,7 +72,6 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
             <input
@@ -89,7 +86,6 @@ export default function Login() {
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
             <div className="relative">
@@ -114,28 +110,25 @@ export default function Login() {
           </div>
 
           <button
-  type="submit"
-  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 active:scale-[0.98] transform"
->
-  Sign in
-</button>
-</form>
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 active:scale-[0.98] transform"
+          >
+            Sign in
+          </button>
+        </form>
 
-<div className="text-right mt-2">
-  <Link
-    to="/forgot-password"
-    className="text-sm text-blue-600 hover:underline"
-  >
-    Forgot password?
-  </Link>
-</div>
+        <div className="text-right mt-2">
+          <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+            Forgot password?
+          </Link>
+        </div>
 
-<p className="mt-6 text-center text-sm text-gray-500">
-  Don't have an account?{' '}
-  <Link to="/register" className="text-blue-600 hover:underline font-medium">
-    Register
-  </Link>
-</p>
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-blue-600 hover:underline font-medium">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );
