@@ -1,7 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { User } from '../types';
-import { loginUser, registerUser, getProfile, refreshAccessToken, logoutApi } from '../features/auth/authApi';
+import {
+  loginUser,
+  registerUser,
+  getProfile,
+  refreshAccessToken,
+  logoutApi,
+} from '../features/auth/authApi';
 
 interface AuthContextType {
   user: User | null;
@@ -29,32 +35,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
+
     if (accessToken) {
       getProfile()
         .then((user) => {
           setUser(user);
-          localStorage.setItem('userName', user.name); // ✅ Added
         })
         .catch(() => {
           const refreshToken = localStorage.getItem('refreshToken');
+
           if (refreshToken) {
             refreshAccessToken(refreshToken)
-              .then(res => {
+              .then((res) => {
                 localStorage.setItem('accessToken', res.accessToken);
                 localStorage.setItem('refreshToken', res.refreshToken);
                 setUser(res.user);
-                localStorage.setItem('userName', res.user.name); // ✅ Added
               })
               .catch(() => {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
-                localStorage.removeItem('userName'); // clean up
                 setUser(null);
               });
           } else {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            localStorage.removeItem('userName');
             setUser(null);
           }
         })
@@ -66,9 +70,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const res = await loginUser(email, password);
+
     localStorage.setItem('accessToken', res.accessToken);
     localStorage.setItem('refreshToken', res.refreshToken);
-    localStorage.setItem('userName', res.user.name); // ✅ Added
+
     setUser(res.user);
   };
 
@@ -82,27 +87,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       phone: data.phone || '',
       officeLocation: data.officeLocation || '',
     };
+
     const res = await registerUser(payload);
+
     localStorage.setItem('accessToken', res.accessToken);
     localStorage.setItem('refreshToken', res.refreshToken);
-    localStorage.setItem('userName', res.user.name); 
+
     setUser(res.user);
   };
 
   const logout = async () => {
     try {
       await logoutApi();
-    } catch (e) {
+    } catch {
       // ignore
     }
+
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userName');
+
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -110,6 +126,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
+
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+
   return context;
 }

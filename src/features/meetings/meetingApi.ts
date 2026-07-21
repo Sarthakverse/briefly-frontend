@@ -44,3 +44,7 @@ export async function getMeetingById(id: string): Promise<MeetingDetail> {
 export async function reprocessMeeting(id: string): Promise<void> {
   await api.post(`/meetings/${id}/reprocess`);
 }
+
+export async function deleteMeeting(id: string): Promise<void> {
+  await api.delete(`/meetings/${id}`);
+}

@@ -1,4 +1,5 @@
-// Placeholder for recent meetings. Replace with real API when available.
+import api from '../../lib/axios';
+
 export interface RecentMeeting {
   id: string;
   title: string;
@@ -9,31 +10,53 @@ export interface RecentMeeting {
   status: string;
 }
 
-// Simulated data for now – remove when backend endpoint is ready
-const mockMeetings: RecentMeeting[] = [
-  {
-    id: '1',
-    title: 'Q4 Architecture Review',
-    adapter: 'ActiveMQ',
-    release: 'v2.1.0',
-    enhancement: 'Private Endpoint Enhancement',
-    date: '2026-07-10',
-    status: 'Completed',
-  },
-  {
-    id: '2',
-    title: 'Sprint 23 Planning',
-    adapter: 'Microsoft Teams',
-    release: 'v4.5.0',
-    enhancement: 'Meeting Transcripts Processing',
-    date: '2026-07-08',
-    status: 'Completed',
-  },
-];
-
 export async function getRecentMeetings(): Promise<RecentMeeting[]> {
-  // TODO: Replace with real API call:
-  // const res = await api.get('/meetings/recent');
-  // return res.data;
-  return mockMeetings;
+  const res = await api.get('/meetings/recent');
+
+  return res.data.map((m: any) => ({
+    id: m.id,
+    title: m.title,
+    adapter: m.adapter?.name || '',
+    release: m.release?.name || '',
+    enhancement: m.enhancement?.name || '',
+    date: new Date(m.createdAt).toISOString().split('T')[0],
+    status: m.status,
+  }));
+}
+
+interface RecentAdapter {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+interface RecentRelease {
+  id: string;
+  name: string;
+  adapterId: string;
+  adapter: { name: string };
+  createdAt: string;
+}
+
+interface RecentEnhancement {
+  id: string;
+  name: string;
+  releaseId: string;
+  release: { name: string; adapter: { id: string; name: string } };
+  createdAt: string;
+}
+
+export async function getRecentAdapters(): Promise<RecentAdapter[]> {
+  const res = await api.get<RecentAdapter[]>('/adapters/recent');
+  return res.data;
+}
+
+export async function getRecentReleases(): Promise<RecentRelease[]> {
+  const res = await api.get<RecentRelease[]>('/releases/recent');
+  return res.data;
+}
+
+export async function getRecentEnhancements(): Promise<RecentEnhancement[]> {
+  const res = await api.get<RecentEnhancement[]>('/enhancements/recent');
+  return res.data;
 }

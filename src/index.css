@@ -1,1 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+/* 1. Tell Tailwind to use this as the default font */
+:root {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* 2. Forcefully apply it to the entire document */
+html, body {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes generate-text { 
+  0% { transform: scaleX(0); opacity: 0; } 
+  15% { opacity: 1; }
+  50%, 100% { transform: scaleX(1); opacity: 1; } 
+}

@@ -17,6 +17,8 @@ import EnhancementList from './features/enhancements/EnhancementList';
 import MeetingList from './features/meetings/MeetingList';
 import MeetingView from './features/meetings/MeetingView';
 import ProcessingPage from './features/upload/ProcessingPage';
+import ErrorBoundary from './components/ErrorBoundary';
+
 
 function PageTransition({ children }: { children: React.ReactNode }) {
   return (
@@ -133,10 +135,12 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AnimatedRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <AnimatedRoutes />
+        </BrowserRouter>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

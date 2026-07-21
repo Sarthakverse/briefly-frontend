@@ -1,8 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { Home, FolderOpen, UploadCloud, LogOut } from 'lucide-react';
+import { Home, FolderOpen, UploadCloud, LogOut, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
-export default function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export default function Sidebar({ onClose }: SidebarProps) {
   const { user, logout } = useAuth();
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -12,10 +16,21 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     await logout();
+    onClose?.();
   };
 
   return (
-    <aside className="w-64 bg-gray-900 text-white flex flex-col h-screen">
+    <aside className="w-64 bg-gray-900 text-white flex flex-col h-screen relative">
+      {/* Mobile close button */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white lg:hidden"
+        >
+          <X size={20} />
+        </button>
+      )}
+
       {/* Logo */}
       <div className="px-6 py-8 border-b border-gray-800">
         <h1 className="text-2xl font-bold tracking-tight">Briefly AI</h1>
@@ -24,13 +39,13 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-6 space-y-1">
-        <NavLink to="/" end className={linkClass}>
+        <NavLink to="/" end className={linkClass} onClick={onClose}>
           <Home size={20} /> Home
         </NavLink>
-        <NavLink to="/adapters" className={linkClass}>
+        <NavLink to="/adapters" className={linkClass} onClick={onClose}>
           <FolderOpen size={20} /> Adapters
         </NavLink>
-        <NavLink to="/upload" className={linkClass}>
+        <NavLink to="/upload" className={linkClass} onClick={onClose}>
           <UploadCloud size={20} /> Upload Transcript
         </NavLink>
       </nav>
