@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
+import { exportElementToPdf } from '../../utils/exportPdf';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -197,6 +198,7 @@ export default function WorkspaceView() {
   const [diagramSvg, setDiagramSvg] = useState('');
   const [loading, setLoading] = useState(true);
   const mermaidContainerRef = useRef<HTMLDivElement>(null);
+  const printableRef = useRef<HTMLDivElement>(null); // PDF export ref
   const [scale, setScale] = useState(1);
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleDraft, setTitleDraft] = useState('');
@@ -541,7 +543,7 @@ export default function WorkspaceView() {
   return (
     <div className="h-[100dvh] w-full flex flex-col bg-slate-50 overflow-hidden font-sans">
       {/* Header */}
-      <header className="shrink-0 bg-white border-b border-slate-200 px-3 py-2 sm:px-6 sm:py-2.5 flex items-center justify-between z-20">
+      <header className="no-print shrink-0 bg-white border-b border-slate-200 px-3 py-2 sm:px-6 sm:py-2.5 flex items-center justify-between z-20">
         <div className="flex items-center gap-3 min-w-0">
           {editingTitle ? (
             <div className="flex items-center gap-2">
@@ -584,7 +586,10 @@ export default function WorkspaceView() {
           >
             <Trash2 size={16} />
           </button>
-          <button className="px-3 py-1.5 bg-white ring-1 ring-slate-200 rounded-lg text-xs font-bold"><Download size={14} className="inline mr-1" /> Export</button>
+          {/* Export PDF Button */}
+          <button onClick={() => printableRef.current && exportElementToPdf(printableRef.current, `${workspace.title || 'workspace'}.pdf`)} className="px-3 py-1.5 bg-white ring-1 ring-slate-200 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors">
+            <Download size={14} className="inline mr-1" /> Export
+          </button>
         </div>
       </header>
 
@@ -604,9 +609,10 @@ export default function WorkspaceView() {
         </button>
       </div>
 
-      {/* Content area */}
-      <div className="flex-1 flex flex-col lg:flex-row min-h-0">
+      {/* Printable content area */}
+      <div ref={printableRef} className="printable-area flex-1 flex flex-col lg:flex-row min-h-0">
         {/* Left: Text */}
+        
         <div className={`w-full lg:w-1/2 flex-1 min-h-0 flex-col border-r border-slate-200 bg-white ${mobileView === 'text' ? 'flex' : 'hidden lg:flex'}`}>
           <div className="shrink-0 p-2 border-b border-slate-100 flex gap-2">
             {tabs.map(tab => (

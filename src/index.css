@@ -18,3 +18,78 @@ html, body {
   15% { opacity: 1; }
   50%, 100% { transform: scaleX(1); opacity: 1; } 
 }
+
+/* ---------- PRINT STYLES (PDF export) ---------- */
+@media print {
+  /* Reset the page */
+  html, body {
+    width: 100%;
+    height: auto;
+    overflow: visible !important;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  /* Hide every element that is NOT part of the printable area */
+  body *:not(.printable-area):not(.printable-area *) {
+    display: none !important;
+  }
+
+  /* Now reveal the printable area and its ancestors up to body */
+  html, body, #root, .printable-area, .printable-area * {
+    display: block !important;
+  }
+
+  /* Adjust the printable area itself */
+  .printable-area {
+    width: 100%;
+    background: white;
+    padding: 20px;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  /* Hide buttons and interactive elements inside the printable area */
+  .printable-area button,
+  .printable-area .mobile-view-switch,
+  .printable-area .zoom-controls {
+    display: none !important;
+  }
+
+  /* Let Mermaid SVGs scale properly */
+  .printable-area svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Prevent page breaks inside cards */
+  .printable-area .section-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Show the hidden PDF title block */
+  .pdf-header {
+    display: block !important;
+  }
+
+  /* Basic PDF title styling */
+  .pdf-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: black;
+  }
+  .pdf-meta {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  /* Force background colours to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

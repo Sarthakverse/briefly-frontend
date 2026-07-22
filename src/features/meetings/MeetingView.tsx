@@ -16,6 +16,7 @@ import DOMPurify from 'dompurify';
 import { toggleFavorite } from './meetingApi';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
+import { exportElementToPdf } from '../../utils/exportPdf';
 
 mermaid.initialize({ 
   startOnLoad: false, 
@@ -210,6 +211,7 @@ export default function MeetingView() {
   const [diagramSvg, setDiagramSvg] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const mermaidContainerRef = useRef<HTMLDivElement>(null);
+  const printableRef = useRef<HTMLDivElement>(null); // PDF export ref
 
   // Scroll & Scale setup
   const [scale, setScale] = useState(1); // 1 = 100%
@@ -546,7 +548,7 @@ export default function MeetingView() {
     <div className="h-[100dvh] w-full flex flex-col bg-slate-50 overflow-hidden font-sans">
       
       {/* --- High Density Header --- */}
-      <header className="shrink-0 bg-white border-b border-slate-200 px-3 py-2 sm:px-6 sm:py-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3 z-20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)]">
+      <header className="no-print shrink-0 bg-white border-b border-slate-200 px-3 py-2 sm:px-6 sm:py-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3 z-20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)]">
         
         {/* Left: Titles & Compact Info Chips */}
         <div className="flex flex-col gap-2 w-full sm:w-auto overflow-hidden">
@@ -590,7 +592,8 @@ export default function MeetingView() {
           >
             <Star size={18} fill={isFavorite ? 'currentColor' : 'none'} />
           </button>
-          <button onClick={() => alert('PDF export coming soon')} className="flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white ring-1 ring-slate-200 text-slate-700 rounded-lg text-xs sm:text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm">
+          {/* Export PDF Button */}
+          <button onClick={() => printableRef.current && exportElementToPdf(printableRef.current, `${meeting.title || 'meeting'}.pdf`)} className="flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white ring-1 ring-slate-200 text-slate-700 rounded-lg text-xs sm:text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm">
             <Download size={14} className="text-slate-400" /> <span>Export</span>
           </button>
           <button onClick={() => meeting.transcriptUrl && window.open(meeting.transcriptUrl, '_blank')} className="flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-bold hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200">
@@ -615,8 +618,8 @@ export default function MeetingView() {
         </button>
       </div>
 
-      {/* --- Split Content Area --- */}
-      <div className="flex-1 flex flex-col lg:flex-row min-h-0 bg-slate-50 relative z-0">
+        {/* --- Printable Area (split content) --- */}
+        <div ref={printableRef} className="printable-area flex-1 flex flex-col lg:flex-row min-h-0 bg-slate-50 relative z-0">
         
         {/* LEFT PANE: Sticky Navigation + Scrollable Text Content */}
         <div className={`w-full lg:w-1/2 flex-1 min-h-0 flex-col border-r border-slate-200 bg-white ${mobileView === 'text' ? 'flex' : 'hidden lg:flex'}`}>
