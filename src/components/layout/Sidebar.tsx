@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, FolderOpen, UploadCloud, LogOut, X } from 'lucide-react';
+import { Home, FolderOpen, UploadCloud, LogOut, X, Briefcase, Star } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
@@ -8,6 +8,7 @@ interface SidebarProps {
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const { user, logout } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
@@ -45,9 +46,17 @@ export default function Sidebar({ onClose }: SidebarProps) {
         <NavLink to="/adapters" className={linkClass} onClick={onClose}>
           <FolderOpen size={20} /> Adapters
         </NavLink>
-        <NavLink to="/upload" className={linkClass} onClick={onClose}>
-          <UploadCloud size={20} /> Upload Transcript
+        <NavLink to="/workspace" className={linkClass} onClick={onClose}>
+          <Briefcase size={20} /> Workspace
         </NavLink>
+        <NavLink to="/favorites" className={linkClass} onClick={onClose}>
+          <Star size={20} /> Favorites
+        </NavLink>
+        {isAdmin && (
+          <NavLink to="/upload" className={linkClass} onClick={onClose}>
+            <UploadCloud size={20} /> Upload Transcript
+          </NavLink>
+        )}
       </nav>
 
       {/* User info & logout */}

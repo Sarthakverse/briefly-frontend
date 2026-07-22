@@ -48,3 +48,8 @@ export async function reprocessMeeting(id: string): Promise<void> {
 export async function deleteMeeting(id: string): Promise<void> {
   await api.delete(`/meetings/${id}`);
 }
+
+export async function toggleFavorite(id: string): Promise<{ isFavorite: boolean }> {
+  const res = await api.post('/favorites/toggle', { type: 'meeting', id });
+  return res.data;
+}

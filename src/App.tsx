@@ -1,26 +1,45 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Layout from './components/layout/Layout';
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/layout/Layout";
+import ErrorBoundary from "./components/ErrorBoundary";
 
-import Login from './features/auth/Login';
-import Register from './features/auth/Register';
-import ForgotPassword from './features/auth/ForgotPassword';
+import Login from "./features/auth/Login";
+import Register from "./features/auth/Register";
+import ForgotPassword from "./features/auth/ForgotPassword";
 
-import Home from './features/home/Home';
-import AdapterList from './features/adapters/AdapterList';
-import Upload from './features/upload/Upload';
-import ReleaseList from './features/releases/ReleaseList';
-import EnhancementList from './features/enhancements/EnhancementList';
-import MeetingList from './features/meetings/MeetingList';
-import MeetingView from './features/meetings/MeetingView';
-import ProcessingPage from './features/upload/ProcessingPage';
-import ErrorBoundary from './components/ErrorBoundary';
+import Home from "./features/home/Home";
 
+import AdapterList from "./features/adapters/AdapterList";
+import ReleaseList from "./features/releases/ReleaseList";
+import EnhancementList from "./features/enhancements/EnhancementList";
 
-function PageTransition({ children }: { children: React.ReactNode }) {
+import MeetingList from "./features/meetings/MeetingList";
+import MeetingView from "./features/meetings/MeetingView";
+
+import Upload from "./features/upload/Upload";
+import ProcessingPage from "./features/upload/ProcessingPage";
+
+import WorkspaceList from "./features/workspace/WorkspaceList";
+import WorkspaceProcessingPage from "./features/workspace/WorkspaceProcessingPage";
+import WorkspaceView from "./features/workspace/WorkspaceView";
+
+import FavoritesPage from './features/favourites/FavoritesPage';
+import RecentEnhancements from "./features/enhancements/RecentEnhancements";
+import RecentReleases from "./features/releases/RecentReleases";
+
+function PageTransition({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -39,7 +58,7 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Public routes */}
+        {/* ---------------- Public Routes ---------------- */}
         <Route
           path="/login"
           element={
@@ -48,7 +67,6 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
-
         <Route
           path="/register"
           element={
@@ -57,7 +75,6 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
-
         <Route
           path="/forgot-password"
           element={
@@ -67,14 +84,14 @@ function AnimatedRoutes() {
           }
         />
 
-        {/* Protected routes */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
+        {/* ---------------- Protected Routes (with Layout) ---------------- */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route
             index
             element={
@@ -84,6 +101,7 @@ function AnimatedRoutes() {
             }
           />
 
+          {/* Adapters */}
           <Route
             path="adapters"
             element={
@@ -92,7 +110,6 @@ function AnimatedRoutes() {
               </PageTransition>
             }
           />
-
           <Route
             path="adapters/:adapterId/releases"
             element={
@@ -111,12 +128,22 @@ function AnimatedRoutes() {
           />
           <Route
             path="enhancements/:enhancementId/meetings"
-            element={<PageTransition><MeetingList /></PageTransition>}
+            element={
+              <PageTransition>
+                <MeetingList />
+              </PageTransition>
+            }
           />
           <Route
-              path="meetings/:meetingId"
-              element={<PageTransition><MeetingView /></PageTransition>}
-            />
+            path="meetings/:meetingId"
+            element={
+              <PageTransition>
+                <MeetingView />
+              </PageTransition>
+            }
+          />
+
+          {/* Upload */}
           <Route
             path="upload"
             element={
@@ -125,9 +152,71 @@ function AnimatedRoutes() {
               </PageTransition>
             }
           />
+
+          {/* Workspace Routes */}
+          <Route
+            path="workspace"
+            element={
+              <PageTransition>
+                <WorkspaceList />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="workspace/processing/:workspaceId"
+            element={
+              <PageTransition>
+                <WorkspaceProcessingPage />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="workspace/:workspaceId"
+            element={
+              <PageTransition>
+                <WorkspaceView />
+              </PageTransition>
+            }
+          />
+
+          {/* Favorites */}
+          <Route
+            path="favorites"
+            element={
+              <PageTransition>
+                <FavoritesPage />
+              </PageTransition>
+            }
+          />
+
+          {/* Recent global views – now inside the Layout so sidebar/nav remain visible */}
+          <Route
+            path="releases/recent"
+            element={
+              <PageTransition>
+                <RecentReleases />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="enhancements/recent"
+            element={
+              <PageTransition>
+                <RecentEnhancements />
+              </PageTransition>
+            }
+          />
         </Route>
 
-        <Route path="processing/:meetingId" element={<PageTransition><ProcessingPage /></PageTransition>}/>
+        {/* Processing (outside main layout, full‑screen) */}
+        <Route
+          path="processing/:meetingId"
+          element={
+            <PageTransition>
+              <ProcessingPage />
+            </PageTransition>
+          }
+        />
       </Routes>
     </AnimatePresence>
   );

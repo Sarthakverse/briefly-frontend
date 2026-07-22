@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ArrowRight,
   CalendarDays,
+  Inbox,
   Play,
   Command,
   Activity
@@ -108,10 +109,10 @@ export default function Home() {
     );
   }, [meetings, search]);
 
-  const categories = [
-    { title: 'Adapters', icon: Box, data: recentAdapters, path: '/adapters', theme: 'indigo' },
-    { title: 'Releases', icon: Layers, data: recentReleases, path: '/adapters', theme: 'fuchsia' },
-    { title: 'Enhancements', icon: Zap, data: recentEnhancements, path: '/adapters', theme: 'amber' },
+    const categories = [
+    { title: 'Recent Adapters', icon: Box, data: recentAdapters, path: '/adapters', theme: 'indigo' },
+    { title: 'Recent Releases', icon: Layers, data: recentReleases, path: '/releases/recent', theme: 'fuchsia' },
+    { title: 'Recent Enhancements', icon: Zap, data: recentEnhancements, path: '/enhancements/recent', theme: 'amber' },
   ];
 
   // Theme map for bento box dynamic styling
@@ -202,7 +203,7 @@ export default function Home() {
         {/* Mobile Recent List */}
         <motion.div variants={fadeUpBlur} className="px-5 mt-2">
           <div className="bg-white rounded-[2rem] p-5 shadow-lg shadow-slate-200/40 border border-slate-100/60">
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Recent Intelligence</h3>
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Recent Transcripts</h3>
             
             <div className="relative mb-5 group">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -276,7 +277,7 @@ export default function Home() {
             <div className="max-w-3xl">
               <motion.div whileHover={{ scale: 1.05 }} className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-xl rounded-full text-xs font-bold tracking-widest uppercase text-indigo-300 mb-6 border border-white/10 cursor-default">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                Intelligence Workspace
+                Thrive With Change
               </motion.div>
               <h1 className="text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
                 Welcome back,<br />
@@ -349,7 +350,7 @@ export default function Home() {
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold text-slate-800 group-hover:text-slate-900">{block.title}</h4>
-                    <p className="text-sm font-semibold text-slate-400 mt-0.5">{block.data.length} Total Registered</p>
+                    <p className="text-sm font-semibold text-slate-400 mt-0.5">{block.data.length} Newly Added</p>
                   </div>
                   <div className={`w-10 h-10 rounded-full ${theme.bg} flex items-center justify-center ${theme.text} opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300`}>
                     <ArrowRight className="w-4 h-4" />
@@ -365,7 +366,7 @@ export default function Home() {
           <div className="flex items-end justify-between gap-6 mb-8">
             <div>
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-1">Workspace</h3>
-              <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Recent Intelligence</h2>
+              <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Recent Transcripts</h2>
             </div>
             
             {/* Search Input */}

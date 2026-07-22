@@ -7,12 +7,15 @@ import {
   Download, FileText, Target, Users, MessageSquare, 
   Settings, CheckCircle, AlertTriangle, ArrowRight,
   User, CheckSquare, Zap, Network, Layout, Briefcase, Activity,
-  ZoomIn, ZoomOut, RotateCcw
+  ZoomIn, ZoomOut, RotateCcw, Star
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 // @ts-ignore
 import DOMPurify from 'dompurify';
+import { toggleFavorite } from './meetingApi';
+import api from '../../lib/axios';
+import toast from 'react-hot-toast';
 
 mermaid.initialize({ 
   startOnLoad: false, 
@@ -211,6 +214,9 @@ export default function MeetingView() {
   // Scroll & Scale setup
   const [scale, setScale] = useState(1); // 1 = 100%
 
+  // Favorite state
+  const [isFavorite, setIsFavorite] = useState(false);
+
   // Reset zoom when switching tabs
   useEffect(() => {
     setScale(1);
@@ -223,6 +229,26 @@ export default function MeetingView() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [meetingId]);
+
+  // Check favorite status on mount
+  useEffect(() => {
+    if (!meetingId) return;
+    api.get('/favorites/check', { params: { type: 'meeting', id: meetingId } })
+      .then(res => setIsFavorite(res.data.isFavorite))
+      .catch(() => {});
+  }, [meetingId]);
+
+  const handleToggleFavorite = async () => {
+    if (!meetingId) return;
+    const newState = !isFavorite;
+    setIsFavorite(newState);
+    try {
+      await toggleFavorite(meetingId);
+    } catch {
+      setIsFavorite(!newState); // revert on error
+      toast.error('Failed to update favorite');
+    }
+  };
 
   const renderMermaid = useCallback(async (code: string | undefined) => {
     if (activeTab === 'speaker') return;
@@ -270,8 +296,8 @@ export default function MeetingView() {
       }
     }
 
-    const baseWidth = parseFloat(svg.dataset.origWidth);
-    const baseHeight = parseFloat(svg.dataset.origHeight);
+    const baseWidth = parseFloat(svg.dataset.origWidth || '0');
+    const baseHeight = parseFloat(svg.dataset.origHeight || '0');
 
     if (!isNaN(baseWidth) && !isNaN(baseHeight)) {
       svg.style.width = `${baseWidth * scale}px`;
@@ -554,6 +580,16 @@ export default function MeetingView() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto w-full sm:w-auto mt-1 sm:mt-0">
+          {/* Favorite toggle button */}
+          <button
+            onClick={handleToggleFavorite}
+            className={`p-2 rounded-lg transition-colors ${
+              isFavorite ? 'text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50' : 'text-slate-400 hover:text-yellow-500 hover:bg-slate-100'
+            }`}
+            title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <Star size={18} fill={isFavorite ? 'currentColor' : 'none'} />
+          </button>
           <button onClick={() => alert('PDF export coming soon')} className="flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white ring-1 ring-slate-200 text-slate-700 rounded-lg text-xs sm:text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm">
             <Download size={14} className="text-slate-400" /> <span>Export</span>
           </button>
