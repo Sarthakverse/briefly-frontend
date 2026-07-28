@@ -22,7 +22,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
   return (
     <aside className="w-64 bg-gray-900 text-white flex flex-col h-screen relative">
-      {/* Mobile close button */}
       {onClose && (
         <button
           onClick={onClose}
@@ -32,13 +31,11 @@ export default function Sidebar({ onClose }: SidebarProps) {
         </button>
       )}
 
-      {/* Logo */}
       <div className="px-6 py-8 border-b border-gray-800">
         <h1 className="text-2xl font-bold tracking-tight">Briefly AI</h1>
         <p className="text-gray-400 text-sm mt-1">Thrive with Change</p>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 py-6 space-y-1">
         <NavLink to="/" end className={linkClass} onClick={onClose}>
           <Home size={20} /> Home
@@ -59,7 +56,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
         )}
       </nav>
 
-      {/* User info & logout */}
       <div className="px-3 py-4 border-t border-gray-800">
         <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400">
           <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">

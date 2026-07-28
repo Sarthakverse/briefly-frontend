@@ -17,18 +17,19 @@ export async function getEnhancements(releaseId: string): Promise<EnhancementOpt
   return res.data;
 }
 
+
 export async function createMeetingWithTranscript(data: {
   title: string;
   adapterId: string;
   releaseId: string;
-  enhancementId: string;
+  enhancementId?: string;
+  otherTaskId?: string;
   transcriptFile: File;
 }): Promise<{ id: string; status: string }> {
   const formData = new FormData();
   formData.append('title', data.title);
   formData.append('adapterId', data.adapterId);
   formData.append('releaseId', data.releaseId);
-  formData.append('enhancementId', data.enhancementId);
   formData.append('transcript', data.transcriptFile);
 
   const res = await api.post('/meetings', formData, {

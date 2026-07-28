@@ -11,12 +11,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
-// @ts-ignore
-import DOMPurify from 'dompurify';
 import { toggleFavorite } from './meetingApi';
 import api from '../../lib/axios';
 import toast from 'react-hot-toast';
-import { exportElementToPdf } from '../../utils/exportPdf';
+import { exportReportToPDF, formatDetailedSummary } from '../../utils/exportPdf';
+import { jsPDF } from 'jspdf';
 
 mermaid.initialize({ 
   startOnLoad: false, 
@@ -82,7 +81,15 @@ function sanitizeMermaid(code: string): string {
 }
 
 // ---------- Beautiful Recharts Donut Component ----------
-const SpeakerPieChart = ({ mermaidString, totalSpeakers }: { mermaidString?: string, totalSpeakers: number }) => {
+const SpeakerPieChart = ({
+  mermaidString,
+  totalSpeakers,
+  chartRef,
+}: {
+  mermaidString?: string;
+  totalSpeakers: number;
+  chartRef?: React.RefObject<HTMLDivElement | null>;
+}) => {
   const data = useMemo(() => {
     if (!mermaidString) return [];
     const regex = /"([^"]+)"\s*:\s*([\d.]+)/g;
@@ -105,7 +112,7 @@ const SpeakerPieChart = ({ mermaidString, totalSpeakers }: { mermaidString?: str
   }
 
   return (
-    <div className="relative w-full h-full min-h-[350px] sm:min-h-[400px]">
+    <div ref={chartRef} className="relative w-full h-full min-h-[350px] sm:min-h-[400px]">
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 pr-[20%] lg:pr-[30%]">
         <span className="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight">{totalSpeakers}</span>
         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">Speakers</span>
@@ -130,23 +137,23 @@ const SpeakerPieChart = ({ mermaidString, totalSpeakers }: { mermaidString?: str
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <RechartsTooltip 
+          <RechartsTooltip
             contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
             itemStyle={{ fontWeight: 'bold', color: '#1e293b' }}
             formatter={(value: any) => [`${value}%`, 'Contribution']}
           />
-          <Legend 
-            layout="vertical" 
-            verticalAlign="middle" 
+          <Legend
+            layout="vertical"
+            verticalAlign="middle"
             align="right"
-            iconType="circle" 
+            iconType="circle"
             iconSize={10}
-            wrapperStyle={{ 
-              fontSize: '12px', 
-              fontWeight: 600, 
+            wrapperStyle={{
+              fontSize: '12px',
+              fontWeight: 600,
               color: '#475569',
               paddingLeft: '10px',
-              width: '40%'
+              width: '40%',
             }}
           />
         </PieChart>
@@ -211,7 +218,8 @@ export default function MeetingView() {
   const [diagramSvg, setDiagramSvg] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const mermaidContainerRef = useRef<HTMLDivElement>(null);
-  const printableRef = useRef<HTMLDivElement>(null); // PDF export ref
+  const printableRef = useRef<HTMLDivElement>(null);
+  const speakerChartRef = useRef<HTMLDivElement>(null);
 
   // Scroll & Scale setup
   const [scale, setScale] = useState(1); // 1 = 100%
@@ -356,6 +364,63 @@ export default function MeetingView() {
 
   const detailedSummary = parseDetailedSummary(meeting?.techSummary ?? undefined);
   const speakerSummaries = parseSpeakerSummary(meeting?.speakerSummary ?? undefined);
+
+  // ------- PDF Export Handler (text only + link) -------
+  const handleExport = async () => {
+    if (!meeting) return;
+
+    const sections = [
+      {
+        title: 'Executive Summary',
+        body: (doc: jsPDF, y: number) => {
+          const text = meeting.execSummary || 'No executive summary available.';
+          doc.setFontSize(10);
+          const lines = doc.splitTextToSize(text, 180);
+          doc.text(lines, 15, y);
+          return y + lines.length * 5;
+        },
+      },
+      {
+        title: 'Technical Details',
+        body: (doc: jsPDF, y: number) => {
+          const ds = parseDetailedSummary(meeting.techSummary);
+          if (!ds) {
+            doc.text('No technical details available.', 15, y);
+            return y + 5;
+          }
+          return formatDetailedSummary(ds, doc, y);
+        },
+      },
+      {
+        title: 'Speaker Summaries',
+        body: (doc: jsPDF, y: number) => {
+          const speakers = parseSpeakerSummary(meeting.speakerSummary);
+          if (!speakers.length) {
+            doc.text('No speaker data.', 15, y);
+            return y + 5;
+          }
+          let cy = y;
+          for (const sp of speakers) {
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${sp.name} (${sp.role})`, 15, cy);
+            doc.setFont('helvetica', 'normal');
+            const lines = doc.splitTextToSize(sp.mainContributions, 180);
+            doc.text(lines, 15, cy + 5);
+            cy += lines.length * 5 + 10;
+          }
+          return cy;
+        },
+      },
+    ];
+
+    await exportReportToPDF(
+      meeting.title,
+      `Adapter: ${meeting.adapter.name} | Release: ${meeting.release.name} | Enhancement: ${meeting.enhancement.name}`,
+      sections,
+      window.location.href
+    );
+  };
 
   // Renderers
   const renderTechnicalContent = () => {
@@ -593,7 +658,10 @@ export default function MeetingView() {
             <Star size={18} fill={isFavorite ? 'currentColor' : 'none'} />
           </button>
           {/* Export PDF Button */}
-          <button onClick={() => printableRef.current && exportElementToPdf(printableRef.current, `${meeting.title || 'meeting'}.pdf`)} className="flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white ring-1 ring-slate-200 text-slate-700 rounded-lg text-xs sm:text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm">
+          <button
+            onClick={handleExport}
+            className="flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white ring-1 ring-slate-200 text-slate-700 rounded-lg text-xs sm:text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm"
+          >
             <Download size={14} className="text-slate-400" /> <span>Export</span>
           </button>
           <button onClick={() => meeting.transcriptUrl && window.open(meeting.transcriptUrl, '_blank')} className="flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-bold hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200">
@@ -713,10 +781,9 @@ export default function MeetingView() {
           >
             {activeTab === 'speaker' ? (
               <div className="w-full h-full p-4 sm:p-8 flex items-center justify-center">
-                <SpeakerPieChart mermaidString={meeting?.speakerMermaid} totalSpeakers={speakerSummaries.length} />
+                <SpeakerPieChart mermaidString={meeting?.speakerMermaid} totalSpeakers={speakerSummaries.length} chartRef={speakerChartRef}/>
               </div>
             ) : (
-              // Inner container uses flex to safely contain the scaled SVG while allowing scrollbars
               <div className="p-4 sm:p-8 min-w-max min-h-max flex">
                 <div
                   ref={mermaidContainerRef}

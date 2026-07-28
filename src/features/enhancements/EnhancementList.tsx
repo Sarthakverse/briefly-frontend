@@ -21,18 +21,22 @@ import {
 } from './enhancementApi';
 import type { Enhancement } from './enhancementApi';
 import { useAuth } from '../../context/AuthContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 export default function EnhancementList() {
   const { releaseId } = useParams<{ releaseId: string }>();
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
+  const { confirm } = useConfirm();
   const navigate = useNavigate();
   const [enhancements, setEnhancements] = useState<Enhancement[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [newName, setNewName] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [shakeInput, setShakeInput] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
 
@@ -51,14 +55,28 @@ export default function EnhancementList() {
 
   const handleCreate = async () => {
     if (!releaseId || !newName.trim()) return;
+
+    if (nameError) {
+      setShakeInput(true);
+      setTimeout(() => setShakeInput(false), 500);
+      return;
+    }
+
     try {
       await createEnhancement(releaseId, newName.trim());
       setNewName('');
+      setNameError('');
       setCreateFormOpen(false);
       fetchEnhancements();
       toast.success('Enhancement created');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to create enhancement');
+      if (err.response?.status === 409) {
+        setNameError(err.response?.data?.message || 'This enhancement name already exists in this release.');
+        setShakeInput(true);
+        setTimeout(() => setShakeInput(false), 500);
+      } else {
+        toast.error(err.response?.data?.message || 'Failed to create enhancement');
+      }
     }
   };
 
@@ -75,8 +93,12 @@ export default function EnhancementList() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Delete this enhancement? All meetings under it will be deleted.'))
-      return;
+    const confirmed = await confirm({
+      title: 'Delete Enhancement',
+      message: 'This enhancement and all meetings associated with it will be permanently deleted.',
+      warning: 'Cascading deletion: all meetings under this enhancement will also be removed.',
+    });
+    if (!confirmed) return;
     try {
       await deleteEnhancement(id);
       fetchEnhancements();
@@ -133,18 +155,35 @@ export default function EnhancementList() {
           <div className="hidden sm:flex w-10 h-10 rounded-2xl items-center justify-center bg-amber-100 text-amber-700 shrink-0 shadow-inner">
             <Zap className="w-5 h-5" />
           </div>
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-            placeholder="Enhancement name (unique per release)"
-            className="flex-1 w-full bg-white/60 backdrop-blur border border-slate-200 rounded-xl px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-100 focus:border-amber-300 transition-all"
-            autoFocus
-          />
+          <div className="flex-1 flex flex-col">
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => {
+                setNewName(e.target.value);
+                if (nameError) setNameError('');
+              }}
+              onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+              placeholder="Enhancement name (unique per release)"
+              className={`flex-1 w-full bg-white/60 backdrop-blur border rounded-xl px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-100 focus:border-amber-300 transition-all ${
+                nameError ? 'border-red-500 ring-2 ring-red-300' : 'border-slate-200'
+              } ${shakeInput ? 'animate-shake' : ''}`}
+              autoFocus
+            />
+            <p className="mt-1 text-xs text-slate-400">
+              Use clear, meaningful names (e.g., “Multi-host Wallet DR Support”).
+            </p>
+            {nameError && (
+              <p className="mt-1 text-xs text-red-600 font-medium">{nameError}</p>
+            )}
+          </div>
           <div className="flex flex-row sm:items-center gap-2 w-full sm:w-auto mt-1 sm:mt-0">
             <button
-              onClick={() => setCreateFormOpen(false)}
+              onClick={() => {
+                setCreateFormOpen(false);
+                setNewName('');
+                setNameError('');
+              }}
               className="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-slate-500 bg-white sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 hover:text-slate-800 transition-colors"
             >
               Cancel

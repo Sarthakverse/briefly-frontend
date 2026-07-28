@@ -19,11 +19,13 @@ import {
   uploadWorkspaceTranscript 
 } from './workspaceApi';
 import type { WorkspaceListItem } from './workspaceApi';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 export default function WorkspaceList() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { confirm } = useConfirm();
   
   const [items, setItems] = useState<WorkspaceListItem[]>([]);
   const [search, setSearch] = useState('');
@@ -89,7 +91,11 @@ export default function WorkspaceList() {
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!window.confirm('Delete this workspace transcript?')) return;
+    const confirmed = await confirm({
+      title: 'Delete Workspace Transcript',
+      message: 'Are you sure you want to delete this workspace transcript? This action cannot be undone.',
+    });
+    if (!confirmed) return;
     try {
       await deleteWorkspaceTranscript(id);
       fetchItems();
@@ -100,7 +106,11 @@ export default function WorkspaceList() {
   };
 
   const handleDeleteAll = async () => {
-    if (!window.confirm('Are you sure you want to delete ALL workspace transcripts? This cannot be undone.')) return;
+    const confirmed = await confirm({
+      title: 'Delete All Workspace Transcripts',
+      message: 'Are you sure you want to permanently delete ALL workspace transcripts? This action cannot be undone.',
+    });
+    if (!confirmed) return;
     try {
       await deleteAllWorkspaceTranscripts();
       setItems([]);
@@ -117,6 +127,7 @@ export default function WorkspaceList() {
   }, [items, search]);
 
   const pad = (n: number) => String(n + 1).padStart(3, '0');
+
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8 pb-16 px-4 sm:px-6 lg:px-8 animate-in fade-in duration-500">

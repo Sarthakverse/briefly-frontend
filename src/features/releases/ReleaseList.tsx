@@ -16,12 +16,14 @@ import {
 import { getReleasesByAdapter, createRelease, updateRelease, deleteRelease } from './releaseApi';
 import type { Release } from './releaseApi';
 import { useAuth } from '../../context/AuthContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 export default function ReleaseList() {
   const { adapterId } = useParams<{ adapterId: string }>();
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
+  const { confirm } = useConfirm();
   const navigate = useNavigate();
 
   const [releases, setReleases] = useState<Release[]>([]);
@@ -30,6 +32,8 @@ export default function ReleaseList() {
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [newName, setNewName] = useState('');
   const [newSummary, setNewSummary] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [shakeInput, setShakeInput] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editSummary, setEditSummary] = useState('');
@@ -49,15 +53,29 @@ export default function ReleaseList() {
 
   const handleCreate = async () => {
     if (!adapterId || !newName.trim()) return;
+
+    if (nameError) {
+      setShakeInput(true);
+      setTimeout(() => setShakeInput(false), 500);
+      return;
+    }
+
     try {
       await createRelease(adapterId, newName.trim(), newSummary.trim() || undefined);
       setNewName('');
       setNewSummary('');
+      setNameError('');
       setCreateFormOpen(false);
       fetchReleases();
       toast.success('Release created');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to create release');
+      if (err.response?.status === 409) {
+        setNameError(err.response?.data?.message || 'This release name already exists for this adapter.');
+        setShakeInput(true);
+        setTimeout(() => setShakeInput(false), 500);
+      } else {
+        toast.error(err.response?.data?.message || 'Failed to create release');
+      }
     }
   };
 
@@ -74,8 +92,12 @@ export default function ReleaseList() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Delete this release? This will remove all enhancements and meetings under it.'))
-      return;
+    const confirmed = await confirm({
+      title: 'Delete Release',
+      message: 'This release and all its enhancements and meetings will be permanently deleted.',
+      warning: 'Deleting this release will cascade to all enhancements and meetings underneath it.',
+    });
+    if (!confirmed) return;
     try {
       await deleteRelease(id);
       fetchReleases();
@@ -133,15 +155,28 @@ export default function ReleaseList() {
             <Layers className="w-5 h-5" />
           </div>
           <div className="flex-1 flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-              placeholder="Release name (unique per adapter)"
-              className="flex-1 w-full bg-white/60 backdrop-blur border border-slate-200 rounded-xl px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-300 transition-all"
-              autoFocus
-            />
+            <div className="flex-1 flex flex-col">
+              <input
+                type="text"
+                value={newName}
+                onChange={(e) => {
+                  setNewName(e.target.value);
+                  if (nameError) setNameError('');
+                }}
+                onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+                placeholder="Release name (unique per adapter)"
+                className={`flex-1 w-full bg-white/60 backdrop-blur border rounded-xl px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-300 transition-all ${
+                  nameError ? 'border-red-500 ring-2 ring-red-300' : 'border-slate-200'
+                } ${shakeInput ? 'animate-shake' : ''}`}
+                autoFocus
+              />
+              <p className="mt-1 text-xs text-slate-400">
+                Recommended format: <strong>26.07</strong>, <strong>26.10</strong>, <strong>27.01</strong>
+              </p>
+              {nameError && (
+                <p className="mt-1 text-xs text-red-600 font-medium">{nameError}</p>
+              )}
+            </div>
             <input
               type="text"
               value={newSummary}
@@ -152,7 +187,12 @@ export default function ReleaseList() {
           </div>
           <div className="flex flex-row sm:items-center gap-2 w-full xl:w-auto mt-1 xl:mt-0">
             <button
-              onClick={() => setCreateFormOpen(false)}
+              onClick={() => {
+                setCreateFormOpen(false);
+                setNewName('');
+                setNewSummary('');
+                setNameError('');
+              }}
               className="flex-1 xl:flex-none px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-slate-500 bg-white sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 hover:text-slate-800 transition-colors"
             >
               Cancel

@@ -16,11 +16,13 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { getAdapters, createAdapter, updateAdapter, deleteAdapter } from './adapterApi';
 import type { Adapter } from './adapterApi';
 import { useAuth } from '../../context/AuthContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 export default function AdapterList() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
+  const { confirm } = useConfirm();
 
   const [adapters, setAdapters] = useState<Adapter[]>([]);
   const [search, setSearch] = useState('');
@@ -28,6 +30,8 @@ export default function AdapterList() {
 
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [newName, setNewName] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [shakeInput, setShakeInput] = useState(false);
 
   const [editId, setEditId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
@@ -39,7 +43,6 @@ export default function AdapterList() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [isShortcutPressed, setIsShortcutPressed] = useState(false);
 
-  // Keyboard shortcut for search focus (Cmd/Ctrl+F)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'f') {
@@ -67,14 +70,28 @@ export default function AdapterList() {
 
   const handleCreate = async () => {
     if (!newName.trim()) return;
+
+    if (nameError) {
+      setShakeInput(true);
+      setTimeout(() => setShakeInput(false), 500);
+      return;
+    }
+
     try {
       await createAdapter(newName.trim());
       setNewName('');
+      setNameError('');
       setCreateFormOpen(false);
       fetchAdapters();
       toast.success('Adapter created');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to create adapter');
+      if (err.response?.status === 409) {
+        setNameError(err.response?.data?.message || 'This name already exists.');
+        setShakeInput(true);
+        setTimeout(() => setShakeInput(false), 500);
+      } else {
+        toast.error(err.response?.data?.message || 'Failed to create adapter');
+      }
     }
   };
 
@@ -93,7 +110,12 @@ export default function AdapterList() {
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!window.confirm('Are you sure you want to delete this adapter?')) return;
+    const confirmed = await confirm({
+      title: 'Delete Adapter',
+      message: 'Are you sure you want to delete this adapter? All releases, enhancements, and meetings will also be removed.',
+      warning: 'Cascading deletion: this will remove the adapter, all releases, enhancements, and meetings.',
+    });
+    if (!confirmed) return;
     try {
       await deleteAdapter(id);
       fetchAdapters();
@@ -162,18 +184,32 @@ export default function AdapterList() {
             <div className="hidden sm:block font-mono text-xs font-semibold text-teal-700 shrink-0 pl-1">
               {pad(adapters.length)}
             </div>
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-              placeholder="Name this adapter…"
-              className="flex-1 w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2.5 sm:py-2 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-              autoFocus
-            />
+            <div className="flex-1 flex flex-col">
+              <input
+                type="text"
+                value={newName}
+                onChange={(e) => {
+                  setNewName(e.target.value);
+                  if (nameError) setNameError('');
+                }}
+                onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+                placeholder="Name this adapter…"
+                className={`flex-1 w-full bg-white border rounded-lg px-3.5 py-2.5 sm:py-2 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all ${
+                  nameError ? 'border-red-500 ring-2 ring-red-300' : 'border-slate-200'
+                } ${shakeInput ? 'animate-shake' : ''}`}
+                autoFocus
+              />
+              {nameError && (
+                <p className="mt-1 text-xs text-red-600 font-medium">{nameError}</p>
+              )}
+            </div>
             <div className="flex items-center gap-2 w-full sm:w-auto mt-1 sm:mt-0">
               <button
-                onClick={() => setCreateFormOpen(false)}
+                onClick={() => {
+                  setCreateFormOpen(false);
+                  setNewName('');
+                  setNameError('');
+                }}
                 className="flex-1 sm:flex-none px-3.5 py-2.5 sm:py-2 rounded-lg text-sm font-semibold text-slate-500 bg-white sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-white transition-colors"
               >
                 Cancel

@@ -80,6 +80,7 @@ const scaleIn: Variants = {
 export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const uploadPath = user?.role === 'admin' ? '/upload' : '/workspace';
   const [listRef] = useAutoAnimate({ duration: 300, easing: 'ease-in-out' });
   const [mobileListRef] = useAutoAnimate({ duration: 300 });
 
@@ -160,7 +161,7 @@ export default function Home() {
         {/* Floating Upload Action */}
         <motion.div variants={fadeUpBlur} className="px-5 -mt-14 relative z-20">
           <div
-            onClick={() => navigate('/upload')}
+            onClick={() => navigate(uploadPath)}
             className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-5 shadow-xl shadow-slate-200/50 border border-white flex items-center gap-4 active:scale-[0.98] transition-transform duration-300 cursor-pointer"
           >
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200/50 shrink-0 relative overflow-hidden">
@@ -307,7 +308,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Upload Dropzone (Span 2) */}
-          <motion.div variants={fadeUpBlur} className="lg:col-span-2 group cursor-pointer" onClick={() => navigate('/upload')}>
+          <motion.div variants={fadeUpBlur} className="lg:col-span-2 group cursor-pointer" onClick={() => navigate(uploadPath)}>
             <div className="relative h-full overflow-hidden rounded-[2rem] bg-white border border-slate-200/60 p-10 flex flex-col justify-center transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-900/5 hover:border-indigo-300/50">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-fuchsia-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               

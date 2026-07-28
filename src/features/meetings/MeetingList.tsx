@@ -13,6 +13,7 @@ import { getMeetingsByEnhancement, deleteMeeting } from './meetingApi';
 import type { MeetingListItem } from './meetingApi';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { useConfirm } from '../../context/ConfirmContext';
 
 export default function MeetingList() {
   const { enhancementId } = useParams<{ enhancementId: string }>();
@@ -22,6 +23,7 @@ export default function MeetingList() {
   const [meetings, setMeetings] = useState<MeetingListItem[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const { confirm } = useConfirm();
 
   const fetchMeetings = () => {
     if (!enhancementId) return;
@@ -37,15 +39,19 @@ export default function MeetingList() {
   }, [enhancementId]);
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this meeting?')) return;
-    try {
-      await deleteMeeting(id);
-      fetchMeetings();
-      toast.success('Meeting deleted');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete meeting');
-    }
-  };
+  const confirmed = await confirm({
+    title: 'Delete Meeting',
+    message: 'Are you sure you want to delete this meeting? This will permanently remove all its data.',
+  });
+  if (!confirmed) return;
+  try {
+    await deleteMeeting(id);
+    fetchMeetings();
+    toast.success('Meeting deleted');
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || 'Failed to delete meeting');
+  }
+};
 
   const filtered = meetings.filter((m) =>
     m.title.toLowerCase().includes(search.toLowerCase())

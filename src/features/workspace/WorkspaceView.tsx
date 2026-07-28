@@ -13,7 +13,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 import api from '../../lib/axios';
-import { exportElementToPdf } from '../../utils/exportPdf';
+import { exportReportToPDF, formatDetailedSummary } from '../../utils/exportPdf';
+import { useConfirm } from '../../context/ConfirmContext';
+import { jsPDF } from 'jspdf';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -77,7 +79,15 @@ function sanitizeMermaid(code: string): string {
 }
 
 // ---------- Recharts Donut ----------
-const SpeakerPieChart = ({ mermaidString, totalSpeakers }: { mermaidString?: string, totalSpeakers: number }) => {
+const SpeakerPieChart = ({
+  mermaidString,
+  totalSpeakers,
+  chartRef,
+}: {
+  mermaidString?: string;
+  totalSpeakers: number;
+  chartRef?: React.RefObject<HTMLDivElement | null>;
+}) => {
   const data = useMemo(() => {
     if (!mermaidString) return [];
     const regex = /"([^"]+)"\s*:\s*([\d.]+)/g;
@@ -100,7 +110,7 @@ const SpeakerPieChart = ({ mermaidString, totalSpeakers }: { mermaidString?: str
   }
 
   return (
-    <div className="relative w-full h-full min-h-[350px]">
+    <div ref={chartRef} className="relative w-full h-full min-h-[350px]">
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 pr-[20%] lg:pr-[30%]">
         <span className="text-3xl sm:text-4xl font-extrabold text-slate-800">{totalSpeakers}</span>
         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">Speakers</span>
@@ -198,12 +208,12 @@ export default function WorkspaceView() {
   const [diagramSvg, setDiagramSvg] = useState('');
   const [loading, setLoading] = useState(true);
   const mermaidContainerRef = useRef<HTMLDivElement>(null);
-  const printableRef = useRef<HTMLDivElement>(null); // PDF export ref
+  const printableRef = useRef<HTMLDivElement>(null);
+  const speakerChartRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleDraft, setTitleDraft] = useState('');
-
-  // Favorite state
+  const { confirm } = useConfirm();
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Reset zoom on tab change
@@ -261,7 +271,11 @@ export default function WorkspaceView() {
   // Delete workspace
   const handleDelete = async () => {
     if (!workspace) return;
-    if (!window.confirm('Are you sure you want to delete this workspace transcript?')) return;
+    const confirmed = await confirm({
+      title: 'Delete Workspace Transcript',
+      message: 'Are you sure you want to delete this workspace transcript? This action cannot be undone.',
+    });
+    if (!confirmed) return;
     try {
       await deleteWorkspaceTranscript(workspace.id);
       toast.success('Deleted');
@@ -269,6 +283,63 @@ export default function WorkspaceView() {
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Delete failed');
     }
+  };
+
+  // ------- PDF Export Handler (text only + link) -------
+  const handleExport = async () => {
+    if (!workspace) return;
+
+    const sections = [
+      {
+        title: 'Executive Summary',
+        body: (doc: jsPDF, y: number) => {
+          const text = workspace.execSummary || 'No executive summary available.';
+          doc.setFontSize(10);
+          const lines = doc.splitTextToSize(text, 180);
+          doc.text(lines, 15, y);
+          return y + lines.length * 5;
+        },
+      },
+      {
+        title: 'Technical Details',
+        body: (doc: jsPDF, y: number) => {
+          const ds = parseDetailedSummary(workspace.techSummary);
+          if (!ds) {
+            doc.text('No technical details available.', 15, y);
+            return y + 5;
+          }
+          return formatDetailedSummary(ds, doc, y);
+        },
+      },
+      {
+        title: 'Speaker Summaries',
+        body: (doc: jsPDF, y: number) => {
+          const speakers = parseSpeakerSummary(workspace.speakerSummary);
+          if (!speakers.length) {
+            doc.text('No speaker data.', 15, y);
+            return y + 5;
+          }
+          let cy = y;
+          for (const sp of speakers) {
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${sp.name} (${sp.role})`, 15, cy);
+            doc.setFont('helvetica', 'normal');
+            const lines = doc.splitTextToSize(sp.mainContributions, 180);
+            doc.text(lines, 15, cy + 5);
+            cy += lines.length * 5 + 10;
+          }
+          return cy;
+        },
+      },
+    ];
+
+    await exportReportToPDF(
+      workspace.title || 'Untitled Workspace',
+      `Workspace Transcript – ${new Date(workspace.createdAt).toLocaleDateString()}`,
+      sections,
+      window.location.href
+    );
   };
 
   // Mermaid rendering
@@ -587,7 +658,10 @@ export default function WorkspaceView() {
             <Trash2 size={16} />
           </button>
           {/* Export PDF Button */}
-          <button onClick={() => printableRef.current && exportElementToPdf(printableRef.current, `${workspace.title || 'workspace'}.pdf`)} className="px-3 py-1.5 bg-white ring-1 ring-slate-200 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors">
+          <button
+            onClick={handleExport}
+            className="px-3 py-1.5 bg-white ring-1 ring-slate-200 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors"
+          >
             <Download size={14} className="inline mr-1" /> Export
           </button>
         </div>
@@ -660,7 +734,7 @@ export default function WorkspaceView() {
           <div className="flex-1 overflow-auto custom-scrollbar" style={{ backgroundImage: activeTab !== 'speaker' ? 'radial-gradient(#cbd5e1 1px, transparent 1px)' : 'none', backgroundSize: '24px 24px', backgroundColor: '#f8fafc' }}>
             {activeTab === 'speaker' ? (
               <div className="w-full h-full p-4 flex items-center justify-center">
-                <SpeakerPieChart mermaidString={workspace.speakerMermaid} totalSpeakers={speakerSummaries.length} />
+                <SpeakerPieChart mermaidString={workspace.speakerMermaid} totalSpeakers={speakerSummaries.length} chartRef={speakerChartRef} />
               </div>
             ) : (
               <div className="p-4 min-w-max min-h-max flex">

@@ -34,6 +34,7 @@ import WorkspaceView from "./features/workspace/WorkspaceView";
 import FavoritesPage from './features/favourites/FavoritesPage';
 import RecentEnhancements from "./features/enhancements/RecentEnhancements";
 import RecentReleases from "./features/releases/RecentReleases";
+import { ConfirmProvider } from "./context/ConfirmContext";
 
 function PageTransition({
   children,
@@ -226,9 +227,11 @@ export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <BrowserRouter>
-          <AnimatedRoutes />
-        </BrowserRouter>
+        <ConfirmProvider>   
+          <BrowserRouter>
+            <AnimatedRoutes />
+          </BrowserRouter>
+        </ConfirmProvider>
       </AuthProvider>
     </ErrorBoundary>
   );
