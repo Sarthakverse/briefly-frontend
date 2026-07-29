@@ -117,7 +117,7 @@ export default function EnhancementList() {
       {/* Back button */}
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-1.5 sm:gap-2 text-slate-500 hover:text-amber-600 font-semibold text-sm transition-colors mb-1 sm:mb-2"
+        className="inline-flex items-center gap-1.5 sm:gap-2 text-slate-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 font-semibold text-sm transition-colors mb-1 sm:mb-2"
       >
         <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
         Back
@@ -126,10 +126,10 @@ export default function EnhancementList() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-5">
         <div>
-          <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold text-slate-800 tracking-tight mb-1.5 sm:mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold text-slate-800 dark:text-white tracking-tight mb-1.5 sm:mb-2">
             Enhancements
           </h1>
-          <p className="text-slate-500 font-medium text-sm sm:text-base">
+          <p className="text-slate-500 dark:text-gray-400 font-medium text-sm sm:text-base">
             Manage specific enhancement items linked to this release.
           </p>
         </div>
@@ -141,7 +141,7 @@ export default function EnhancementList() {
           className={`w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
             isAdmin
               ? 'bg-amber-600 text-white hover:bg-amber-700 hover:shadow-md active:scale-95'
-              : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+              : 'bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 border border-slate-200 dark:border-gray-700 cursor-not-allowed'
           }`}
         >
           {createFormOpen ? <X size={18} /> : <Plus size={18} />}
@@ -151,8 +151,8 @@ export default function EnhancementList() {
 
       {/* Animated Create Form */}
       {createFormOpen && isAdmin && (
-        <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-3xl border-2 border-dashed border-amber-200 shadow-sm mb-6 flex flex-col sm:flex-row items-stretch gap-4 animate-in slide-in-from-top-4 fade-in duration-300">
-          <div className="hidden sm:flex w-10 h-10 rounded-2xl items-center justify-center bg-amber-100 text-amber-700 shrink-0 shadow-inner">
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 sm:p-6 rounded-3xl border-2 border-dashed border-amber-200 dark:border-amber-800 shadow-sm mb-6 flex flex-col sm:flex-row items-stretch gap-4 animate-in slide-in-from-top-4 fade-in duration-300">
+          <div className="hidden sm:flex w-10 h-10 rounded-2xl items-center justify-center bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 shrink-0 shadow-inner">
             <Zap className="w-5 h-5" />
           </div>
           <div className="flex-1 flex flex-col">
@@ -165,12 +165,12 @@ export default function EnhancementList() {
               }}
               onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
               placeholder="Enhancement name (unique per release)"
-              className={`flex-1 w-full bg-white/60 backdrop-blur border rounded-xl px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-100 focus:border-amber-300 transition-all ${
-                nameError ? 'border-red-500 ring-2 ring-red-300' : 'border-slate-200'
+              className={`flex-1 w-full bg-white/60 dark:bg-gray-800/60 backdrop-blur border rounded-xl px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/20 focus:border-amber-300 dark:focus:border-amber-600 transition-all ${
+                nameError ? 'border-red-500 ring-2 ring-red-300' : 'border-slate-200 dark:border-gray-700'
               } ${shakeInput ? 'animate-shake' : ''}`}
               autoFocus
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-400 dark:text-gray-500">
               Use clear, meaningful names (e.g., “Multi-host Wallet DR Support”).
             </p>
             {nameError && (
@@ -184,7 +184,7 @@ export default function EnhancementList() {
                 setNewName('');
                 setNameError('');
               }}
-              className="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-slate-500 bg-white sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 hover:text-slate-800 transition-colors"
+              className="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-slate-500 dark:text-gray-400 bg-white dark:bg-gray-800 sm:bg-transparent border border-slate-200 dark:border-gray-700 sm:border-transparent hover:bg-slate-100 dark:hover:bg-gray-700 hover:text-slate-800 dark:hover:text-white transition-colors"
             >
               Cancel
             </button>
@@ -200,15 +200,15 @@ export default function EnhancementList() {
 
       {/* Search Bar with Glass Effect */}
       <div className="relative w-full">
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-100/50 to-transparent rounded-2xl blur opacity-0 group-focus-within:opacity-100 transition duration-500 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-100/50 dark:from-amber-900/30 to-transparent rounded-2xl blur opacity-0 group-focus-within:opacity-100 transition duration-500 pointer-events-none" />
         <div className="relative flex items-center">
-          <Search className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 group-focus-within:text-amber-500 transition-colors" />
+          <Search className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 dark:text-gray-500 group-focus-within:text-amber-500 dark:group-focus-within:text-amber-400 transition-colors" />
           <input
             type="text"
             placeholder="Search enhancements..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 bg-white/60 backdrop-blur border border-slate-200 rounded-2xl text-sm sm:text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-100 focus:border-amber-300 transition-all shadow-sm"
+            className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 bg-white/60 dark:bg-gray-900/60 backdrop-blur border border-slate-200 dark:border-gray-700 rounded-2xl text-sm sm:text-base font-medium text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/20 focus:border-amber-300 dark:focus:border-amber-600 transition-all shadow-sm"
           />
         </div>
       </div>
@@ -220,20 +220,20 @@ export default function EnhancementList() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-slate-200/80 p-4 sm:p-5 animate-pulse flex items-center gap-3 sm:gap-4"
+                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-gray-800 p-4 sm:p-5 animate-pulse flex items-center gap-3 sm:gap-4"
               >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-100 rounded-xl sm:rounded-2xl shrink-0" />
-                <div className="h-4 bg-slate-100 rounded-md w-1/3" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-100 dark:bg-gray-700 rounded-xl sm:rounded-2xl shrink-0" />
+                <div className="h-4 bg-slate-100 dark:bg-gray-700 rounded-md w-1/3" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-[300px] bg-white/80 backdrop-blur-sm rounded-3xl border-2 border-dashed border-slate-200 shadow-sm px-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center mb-4 sm:mb-5">
-              <Inbox className="w-7 h-7 sm:w-8 h-8 text-slate-300" />
+          <div className="flex flex-col items-center justify-center h-[300px] bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl border-2 border-dashed border-slate-200 dark:border-gray-800 shadow-sm px-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 dark:bg-gray-800 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-700 flex items-center justify-center mb-4 sm:mb-5">
+              <Inbox className="w-7 h-7 sm:w-8 h-8 text-slate-300 dark:text-gray-600" />
             </div>
-            <p className="text-slate-800 font-bold text-lg sm:text-xl text-center">No enhancements found</p>
-            <p className="text-slate-500 text-sm sm:text-base mt-2 max-w-sm text-center font-medium">
+            <p className="text-slate-800 dark:text-white font-bold text-lg sm:text-xl text-center">No enhancements found</p>
+            <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base mt-2 max-w-sm text-center font-medium">
               {search
                 ? `We couldn’t find anything matching “${search}”.`
                 : 'This release has no enhancements yet. Create one to start adding meetings.'}
@@ -241,7 +241,7 @@ export default function EnhancementList() {
             {!search && isAdmin && (
               <button
                 onClick={() => setCreateFormOpen(true)}
-                className="mt-6 font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1.5 transition-colors"
+                className="mt-6 font-bold text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 flex items-center gap-1.5 transition-colors"
               >
                 Create Enhancement <ArrowRight className="w-4 h-4" />
               </button>
@@ -252,52 +252,49 @@ export default function EnhancementList() {
             {filtered.map((enhancement) => (
               <div
                 key={enhancement.id}
-                className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border p-4 sm:p-5 shadow-sm transition-all duration-300 overflow-hidden ${
+                className={`group relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border p-4 sm:p-5 shadow-sm transition-all duration-300 overflow-hidden ${
                   editId === enhancement.id
                     ? 'ring-2 ring-amber-400 border-transparent'
-                    : 'border-slate-200/80 hover:border-amber-200 hover:shadow-lg hover:shadow-slate-100/50 cursor-pointer'
+                    : 'border-slate-200/80 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-600 hover:shadow-lg hover:shadow-slate-100/50 dark:hover:shadow-gray-900/50 cursor-pointer'
                 }`}
               >
-                {/* Left accent line */}
-                <div className="absolute left-0 top-0 bottom-0 w-1 sm:w-1.5 bg-amber-400 scale-y-0 group-hover:scale-y-100 origin-center transition-transform duration-300 rounded-r-sm" />
+                <div className="absolute left-0 top-0 bottom-0 w-1 sm:w-1.5 bg-amber-400 dark:bg-amber-500 scale-y-0 group-hover:scale-y-100 origin-center transition-transform duration-300 rounded-r-sm" />
 
                 {editId === enhancement.id ? (
-                  /* Edit State */
                   <div className="flex flex-col sm:flex-row gap-3 animate-in fade-in zoom-in-95 duration-200">
                     <input
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleUpdate(enhancement.id)}
-                      className="flex-1 w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-300"
+                      className="flex-1 w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-700 focus:border-amber-300 dark:focus:border-amber-600"
                       autoFocus
                     />
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setEditId(null)}
-                        className="flex-1 sm:flex-none px-3 py-2 text-slate-500 hover:text-slate-800 rounded-lg font-semibold text-sm bg-slate-50 border border-slate-200 sm:border-transparent sm:bg-transparent hover:bg-slate-100 transition-colors"
+                        className="flex-1 sm:flex-none px-3 py-2 text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white rounded-lg font-semibold text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 sm:border-transparent sm:bg-transparent hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={() => handleUpdate(enhancement.id)}
-                        className="flex-1 sm:flex-none px-3 py-2 bg-amber-100 text-amber-700 rounded-lg font-semibold text-sm hover:bg-amber-200 transition-colors"
+                        className="flex-1 sm:flex-none px-3 py-2 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 rounded-lg font-semibold text-sm hover:bg-amber-200 dark:hover:bg-amber-900/30 transition-colors"
                       >
                         Save
                       </button>
                     </div>
                   </div>
                 ) : (
-                  /* View State */
                   <div
                     onClick={() => navigate(`/enhancements/${enhancement.id}/meetings`)}
                     className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                   >
                     <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200 text-amber-700 shadow-inner ring-1 ring-white/50 shrink-0">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/30 text-amber-700 dark:text-amber-400 shadow-inner ring-1 ring-white/50 dark:ring-white/10 shrink-0">
                         <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
-                      <h3 className="font-bold text-slate-800 group-hover:text-amber-600 transition-colors text-base sm:text-lg truncate">
+                      <h3 className="font-bold text-slate-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors text-base sm:text-lg truncate">
                         {enhancement.name}
                       </h3>
                     </div>
@@ -311,7 +308,7 @@ export default function EnhancementList() {
                               setEditId(enhancement.id);
                               setEditName(enhancement.name);
                             }}
-                            className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors"
+                            className="p-2 text-slate-400 dark:text-gray-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-xl transition-colors"
                             title="Edit Enhancement"
                           >
                             <Pencil size={15} />
@@ -321,14 +318,14 @@ export default function EnhancementList() {
                               e.stopPropagation();
                               handleDelete(enhancement.id);
                             }}
-                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                            className="p-2 text-slate-400 dark:text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
                             title="Delete Enhancement"
                           >
                             <Trash2 size={15} />
                           </button>
                         </div>
                       )}
-                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 group-hover:text-amber-500 transition-colors" />
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 dark:text-gray-600 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors" />
                     </div>
                   </div>
                 )}

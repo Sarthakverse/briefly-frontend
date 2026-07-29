@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
+import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/layout/Layout";
@@ -35,6 +36,8 @@ import FavoritesPage from './features/favourites/FavoritesPage';
 import RecentEnhancements from "./features/enhancements/RecentEnhancements";
 import RecentReleases from "./features/releases/RecentReleases";
 import { ConfirmProvider } from "./context/ConfirmContext";
+import TaskList from './features/tasks/TaskList';
+import TaskMeetingList from './features/tasks/TaskMeetingList';
 
 function PageTransition({
   children,
@@ -190,7 +193,7 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* Recent global views – now inside the Layout so sidebar/nav remain visible */}
+          {/* Recent global views */}
           <Route
             path="releases/recent"
             element={
@@ -204,6 +207,24 @@ function AnimatedRoutes() {
             element={
               <PageTransition>
                 <RecentEnhancements />
+              </PageTransition>
+            }
+          />
+
+          {/* Other Tasks */}
+          <Route
+            path="tasks"
+            element={
+              <PageTransition>
+                <TaskList />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="tasks/:taskId/meetings"
+            element={
+              <PageTransition>
+                <TaskMeetingList />
               </PageTransition>
             }
           />
@@ -226,13 +247,15 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ConfirmProvider>   
-          <BrowserRouter>
-            <AnimatedRoutes />
-          </BrowserRouter>
-        </ConfirmProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ConfirmProvider>
+            <BrowserRouter>
+              <AnimatedRoutes />
+            </BrowserRouter>
+          </ConfirmProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, FolderOpen, UploadCloud, LogOut, X, Briefcase, Star } from 'lucide-react';
+import { Home, FolderOpen, UploadCloud, LogOut, X, Briefcase, Star, ListTodo } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
@@ -40,14 +40,17 @@ export default function Sidebar({ onClose }: SidebarProps) {
         <NavLink to="/" end className={linkClass} onClick={onClose}>
           <Home size={20} /> Home
         </NavLink>
-        <NavLink to="/adapters" className={linkClass} onClick={onClose}>
-          <FolderOpen size={20} /> Adapters
-        </NavLink>
         <NavLink to="/workspace" className={linkClass} onClick={onClose}>
           <Briefcase size={20} /> Workspace
         </NavLink>
         <NavLink to="/favorites" className={linkClass} onClick={onClose}>
           <Star size={20} /> Favorites
+        </NavLink>
+        <NavLink to="/adapters" className={linkClass} onClick={onClose}>
+          <FolderOpen size={20} /> Adapters
+        </NavLink>
+        <NavLink to="/tasks" className={linkClass} onClick={onClose}>
+          <ListTodo size={20} /> Other Tasks
         </NavLink>
         {isAdmin && (
           <NavLink to="/upload" className={linkClass} onClick={onClose}>

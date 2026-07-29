@@ -10,9 +10,10 @@ export interface MeetingListItem {
 export interface MeetingDetail {
   id: string;
   title: string;
-  adapterId: string;
-  releaseId: string;
-  enhancementId: string;
+  adapterId?: string;
+  releaseId?: string;
+  enhancementId?: string;
+  taskId?: string;
   transcriptUrl?: string;
   transcriptText?: string;
   status: string;
@@ -26,9 +27,10 @@ export interface MeetingDetail {
   metadata?: any;
   createdAt: string;
   updatedAt: string;
-  adapter: { name: string };
-  release: { name: string };
-  enhancement: { name: string };
+  adapter?: { name: string } | null;
+  release?: { name: string } | null;
+  enhancement?: { name: string } | null;
+  task?: { name: string } | null;
 }
 
 export async function getMeetingsByEnhancement(enhancementId: string): Promise<MeetingListItem[]> {

@@ -74,30 +74,28 @@ export default function ProcessingPage() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] mix-blend-overlay pointer-events-none"></div>
       </div>
 
-      {/* --- Immersive SVG Branching/Vein Background --- */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <svg className="w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <svg className="w-full h-full opacity-30" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="vein-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#818cf8" stopOpacity="0.1" />  {/* Indigo-400 */}
-              <stop offset="50%" stopColor="#e879f9" stopOpacity="0.6" /> {/* Fuchsia-400 */}
+              <stop offset="0%" stopColor="#818cf8" stopOpacity="0.1" />
+              <stop offset="50%" stopColor="#e879f9" stopOpacity="0.6" />
               <stop offset="100%" stopColor="#818cf8" stopOpacity="0.1" /> 
             </linearGradient>
           </defs>
           
-          {/* Animated Branching Paths */}
           {[
-            "M-100,-100 C200,300 300,500 50%,50%",
-            "M1200,-100 C900,200 700,500 50%,50%",
-            "M-100,1200 C300,900 400,600 50%,50%",
-            "M1200,1200 C800,800 600,600 50%,50%",
-            "M50%,-100 C50%,300 50%,400 50%,50%",
+            "M-20,-20 C40,30 60,50 50,50",
+            "M120,-20 C90,20 70,50 50,50",
+            "M-20,120 C30,90 40,60 50,50",
+            "M120,120 C80,80 60,60 50,50",
+            "M50,-20 C50,30 50,40 50,50",
           ].map((path, i) => (
             <motion.path
               key={i}
               d={path}
               stroke="url(#vein-grad)"
-              strokeWidth="2"
+              strokeWidth="0.5"
               fill="none"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
@@ -137,7 +135,7 @@ export default function ProcessingPage() {
           {/* Orbital Rings */}
           <motion.div animate={{ rotate: 360 }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }} className="absolute inset-0 border border-indigo-500/30 rounded-full border-t-indigo-400 border-r-transparent" />
           <motion.div animate={{ rotate: -360 }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }} className="absolute inset-6 border border-fuchsia-500/20 rounded-full border-b-fuchsia-400 border-l-transparent" />
-          <div className="absolute inset-12 border-[0.5px] border-purple-500/20 rounded-full animate-[spin_40s_linear_infinite]" />
+          
           
           {/* Central AI Icon */}
           <motion.div 

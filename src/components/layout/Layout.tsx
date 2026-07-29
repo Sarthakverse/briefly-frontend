@@ -7,7 +7,7 @@ export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar />
@@ -23,7 +23,7 @@ export default function Layout() {
       >
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
             sidebarOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setSidebarOpen(false)}
@@ -31,7 +31,7 @@ export default function Layout() {
 
         {/* Sidebar */}
         <div
-          className={`relative h-full w-64 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
+          className={`relative h-full w-64 bg-white dark:bg-gray-900 shadow-2xl transform transition-transform duration-300 ease-in-out ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -53,10 +53,10 @@ export default function Layout() {
       </div>
 
       {/* Bottom Navigation (Mobile Only) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around bg-white border-t border-gray-200 py-2 shadow-lg lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-2 shadow-lg lg:hidden">
         <a
           href="/"
-          className="flex flex-col items-center text-xs text-gray-500 hover:text-blue-600 transition-colors"
+          className="flex flex-col items-center text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         >
           <svg
             className="w-5 h-5 mb-0.5"
@@ -76,7 +76,7 @@ export default function Layout() {
 
         <a
           href="/adapters"
-          className="flex flex-col items-center text-xs text-gray-500 hover:text-blue-600 transition-colors"
+          className="flex flex-col items-center text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         >
           <svg
             className="w-5 h-5 mb-0.5"
@@ -96,7 +96,7 @@ export default function Layout() {
 
         <a
           href="/upload"
-          className="flex flex-col items-center text-xs text-gray-500 hover:text-blue-600 transition-colors"
+          className="flex flex-col items-center text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         >
           <svg
             className="w-5 h-5 mb-0.5"
