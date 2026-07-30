@@ -6,12 +6,16 @@
 
 <!-- VIDEO DEMO -->
 <div align="center" style="margin: 30px 0;">
-  <video controls autoplay muted loop>
-  <source src="https://drive.google.com/uc?export=download&id=1h4n77kILcHQfjhho2AdKir0g-NIZdGRN" type="video/mp4">
-</video>
-  <p style="font-size: 13px; color: #64748b; margin-top: 8px;">
-    ▶ Replace <code>src</code> with your actual demo video URL
-  </p>
+
+  <a href="https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing" target="_blank">
+
+    <img
+      src="https://img.shields.io/badge/▶%20Watch%20Demo%20Video-4285F4?style=for-the-badge&logo=google-drive&logoColor=white"
+      alt="Watch Demo Video"
+    />
+
+  </a>
+
 </div>
 
 ---
