@@ -8,12 +8,6 @@
 <div align="center" style="margin: 30px 0;">
 
   <a href="https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing" target="_blank">
-
-    <img
-      src="https://img.shields.io/badge/▶%20Watch%20Demo%20Video-4285F4?style=for-the-badge&logo=google-drive&logoColor=white"
-      alt="Watch Demo Video"
-    />
-
   </a>
 
 </div>
