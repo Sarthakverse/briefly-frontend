@@ -9,6 +9,12 @@
 
 [![Watch Demo](https://img.shields.io/badge/▶%20Watch%20Demo%20Video-4285F4?style=for-the-badge&logo=google-drive&logoColor=white)](https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing)
 
+<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/2ab18be2-e2e1-4272-9bf6-eebdb7df93b9" />
+<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/ad81b1a4-0d95-48b2-95ee-30106bab9e0c" />
+<img width="959" height="538" alt="image" src="https://github.com/user-attachments/assets/cad479b2-3695-43eb-8240-8265189a9615" />
+<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/1d2f3c8a-642b-4876-9276-21f782caba12" />
+<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/280fedb3-7ae7-4897-b434-5719c6febe84" />
+
 ---
 
 ## 🧠 AI at the Core
