@@ -5,19 +5,9 @@
 </div>
 
 <!-- VIDEO DEMO -->
-<div align="center" style="margin: 30px 0;">
+## 🎥 Demo Video
 
-  <a href="https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing" target="_blank">
-
-    <img
-      src="https://via.placeholder.com/800x450.png?text=Click+to+Watch+Demo"
-      width="800"
-      alt="Demo Video"
-    />
-
-  </a>
-
-</div>
+[![Watch Demo](https://img.shields.io/badge/▶%20Watch%20Demo%20Video-4285F4?style=for-the-badge&logo=google-drive&logoColor=white)](https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing)
 
 ---
 
