@@ -6,9 +6,9 @@
 
 <!-- VIDEO DEMO -->
 <div align="center" style="margin: 30px 0;">
-  <video width="100%" style="max-width: 800px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" controls autoplay muted loop>
-    <source src="https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing">
-  </video>
+  <video controls autoplay muted loop>
+  <source src="https://drive.google.com/uc?export=download&id=1h4n77kILcHQfjhho2AdKir0g-NIZdGRN" type="video/mp4">
+</video>
   <p style="font-size: 13px; color: #64748b; margin-top: 8px;">
     ▶ Replace <code>src</code> with your actual demo video URL
   </p>
