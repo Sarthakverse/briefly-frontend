@@ -38,6 +38,7 @@ import RecentReleases from "./features/releases/RecentReleases";
 import { ConfirmProvider } from "./context/ConfirmContext";
 import TaskList from './features/tasks/TaskList';
 import TaskMeetingList from './features/tasks/TaskMeetingList';
+import { NotificationProvider } from "./context/NotificationContext"; 
 
 function PageTransition({
   children,
@@ -250,9 +251,11 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <ConfirmProvider>
-            <BrowserRouter>
-              <AnimatedRoutes />
-            </BrowserRouter>
+            <NotificationProvider>
+              <BrowserRouter>
+                <AnimatedRoutes />
+              </BrowserRouter>
+            </NotificationProvider>
           </ConfirmProvider>
         </AuthProvider>
       </ThemeProvider>

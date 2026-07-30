@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import ChatBot from "../../features/chat/ChatBot";
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function Layout() {
         />
 
         {/* Add bottom padding so mobile nav doesn't cover content */}
-        <main className="main-content flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-20 lg:pb-8">
+        <main className="main-content flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-20 lg:pb-8 scrollbar-hide">
           <Outlet />
         </main>
       </div>
@@ -114,6 +115,7 @@ export default function Layout() {
           Upload
         </a>
       </nav>
+      <ChatBot />
     </div>
   );
 }
