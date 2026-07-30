@@ -8,6 +8,13 @@
 <div align="center" style="margin: 30px 0;">
 
   <a href="https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing" target="_blank">
+
+    <img
+      src="https://via.placeholder.com/800x450.png?text=Click+to+Watch+Demo"
+      width="800"
+      alt="Demo Video"
+    />
+
   </a>
 
 </div>
