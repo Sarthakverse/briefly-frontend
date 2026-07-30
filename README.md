@@ -26,7 +26,7 @@
 <div align="center" style="margin: 32px 0;">
   <video
     controls
-    poster="https://via.placeholder.com/960x540/0f172a/6366f1?text=Briefly+AI+Demo"
+    poster="https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing"
     style="width: 100%; max-width: 960px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);"
     preload="metadata"
   >
