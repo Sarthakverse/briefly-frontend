@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/favicon.svg" alt="Briefly AI" width="80" />
+  <img src="public/favicon.svg" alt="Briefly AI" width="80" />
   <h1 style="margin-top:0;">Briefly</h1>
   <p><em>Thrive with Change – AI‑Powered Meeting Intelligence</em></p>
 </div>
