@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Loader2, Sparkles, Bot, User, ExternalLink } from 'lucide-react';
-import { askChat, type ChatResponse } from '../../features/chat/chatApi';
+import { askChat, askChatStream, type ChatResponse } from '../../features/chat/chatApi';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
@@ -61,25 +61,75 @@ export default function ChatBot() {
     setLoading(true);
 
     try {
-      const { reply, sources } = await askChat(trimmed);
+      // Try streaming first
+      const stream = await askChatStream(trimmed);
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+
+      let botReply = '';
+
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'bot',
-        text: reply,
+        text: '',
         timestamp: new Date(),
-        sources,
       };
+
       setMessages(prev => [...prev, botMsg]);
+      let lastRender = Date.now();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        botReply += decoder.decode(value, { stream: true });
+
+        const now = Date.now();
+
+        if (now - lastRender >= 75) {
+          setMessages(prev =>
+            prev.map(m =>
+              m.id === botMsg.id ? { ...m, text: botReply } : m
+            )
+          );
+
+          lastRender = now;
+        }
+      }
+
+      // Final update
+      setMessages(prev =>
+        prev.map(m =>
+          m.id === botMsg.id ? { ...m, text: botReply } : m
+        )
+      );
+
+      // Note: streaming currently doesn't return sources;
+      // if you want sources later you can do a quick non-stream call.
     } catch {
-      setMessages(prev => [
-        ...prev,
-        {
+      // Fallback to non-streaming
+      try {
+        const { reply } = await askChat(trimmed);
+
+        const botMsg: Message = {
           id: (Date.now() + 1).toString(),
           sender: 'bot',
-          text: 'Sorry, something went wrong. Please try again.',
+          text: reply,
           timestamp: new Date(),
-        },
-      ]);
+        };
+
+        setMessages(prev => [...prev, botMsg]);
+      } catch {
+        setMessages(prev => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'bot',
+            text: 'Sorry, something went wrong. Please try again.',
+            timestamp: new Date(),
+          },
+        ]);
+      }
     } finally {
       setLoading(false);
     }
@@ -175,7 +225,7 @@ export default function ChatBot() {
                       <p>{msg.text}</p>
                     )}
 
-                    {/* Source citations */}
+                    {/* Source citations – only for non‑streaming replies for now */}
                     {msg.sender === 'bot' && msg.sources && msg.sources.length > 0 && (
                       <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
                         <div className="text-[10px] text-gray-500 dark:text-gray-400 mb-1 font-semibold">Sources:</div>
@@ -187,10 +237,10 @@ export default function ChatBot() {
                                 e.stopPropagation();
                                 navigate(source.url);
                               }}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors max-w-[200px] overflow-hidden"
                             >
-                              <ExternalLink size={10} />
-                              {source.label}
+                              <ExternalLink size={10} className="shrink-0" />
+                              <span className="truncate">{source.label}</span>
                             </button>
                           ))}
                         </div>
