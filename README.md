@@ -1,92 +1,174 @@
 <div align="center">
-  <img src="public/favicon.svg" alt="Briefly AI" width="80" />
-  <h1 style="margin-top:0;">Briefly</h1>
-  <p><em>Thrive with Change – AI‑Powered Meeting Intelligence</em></p>
+
+  <!-- Header Banner -->
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,24,36&height=180&section=header&text=Sarthak%20Rastogi&fontSize=42&fontColor=ffffff&animation=twinkling&fontAlignY=38" width="100%" alt="Header Banner" />
+
+  <!-- Animated Typing Tagline -->
+  <a href="https://git.io/typing-svg">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=00F2FE&center=true&vCenter=true&width=800&lines=4%2B+Years+Java+%2B+Distributed+Systems+Engineer;Gen+AI+%2B+RAG+Pipeline+Architect;Oracle+Integration+Cloud+(OIC)+Developer;Creator+of+Briefly+AI+--+Meeting+Intelligence" alt="Typing SVG" />
+  </a>
+
+  <p align="center">
+    <code>Java Developer (4 YOE)</code> • 
+    <code>Gen AI & RAG Engineer (1 YOE)</code> • 
+    <code>OIC Integration Specialist (1 YOE)</code>
+  </p>
+
+  <!-- Connect Links -->
+  <p align="center">
+    <a href="https://linkedin.com/in/sarthak-rastogi-47bb11256"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
+    <a href="mailto:sarthakrastogi102@gmail.com"><img src="https://img.shields.io/badge/Gmail-EA4335?style=for-the-badge&logo=gmail&logoColor=white" /></a>
+    <a href="https://leetcode.com/u/rsarthak123"><img src="https://img.shields.io/badge/LeetCode-FFA116?style=for-the-badge&logo=leetcode&logoColor=black" /></a>
+    <a href="https://medium.com/@rsarthakverse123"><img src="https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white" /></a>
+  </p>
+
 </div>
 
 ---
-## 🧠 AI at the Core
 
-Briefly is a **full‑stack meeting intelligence platform** that turns raw transcripts into structured insights.  
-The **entire summarisation pipeline, chat assistant, and search** are powered by **Large Language Models** (OpenAI / DeepSeek), making AI not just a feature but the **heart** of the application.
+## ⚡ Executive Summary
+
+Engineered enterprise-grade backend systems, distributed microservices, and AI-driven platforms with over **4 years of hands-on Java development**, **1 year of OIC integrations**, and **1 year architecting Generative AI & Retrieval-Augmented Generation (RAG) applications**. Focused on high-throughput microservices, robust LLM pipelines, and fault-tolerant cloud integrations.
+
+* 🎯 **Core Expertise**: Distributed Systems, Spring Boot, Spring AI, RAG Architectures, Vector Databases, Oracle Integration Cloud (OIC).
+* 🔭 **Current Focus**: Full-stack LLM orchestration, intelligent agent systems, and enterprise middleware.
+* ✍️ **Technical Writing**: Author of 6+ backend engineering articles on Medium exploring distributed systems and scalable architecture.
+
+---
+
+## 🔥 Featured Flagship Project
+
+### 🎙️ Briefly AI — *AI-Powered Meeting Intelligence Platform*
+
+> An enterprise-grade meeting intelligence engine that transforms unstructured transcripts (`.vtt`, `.docx`, `.txt`) into structured executive insights, technical roadmaps, and context-aware multi-turn Q&A.
 
 <div align="center">
   <table>
     <tr>
-      <td align="center" width="33%">
-        <img src="https://img.icons8.com/fluency/48/artificial-intelligence.png" width="40"/><br/>
-        <b>AI Summaries</b><br/>
-        <sub>Executive, technical & speaker</sub>
+      <td width="33%" align="center">
+        <b>🧠 LLM Pipeline</b><br/>
+        <sub>OpenAI GPT-4o-mini & DeepSeek-V4-Flash for structured summarization & automated Mermaid flowcharts.</sub>
       </td>
-      <td align="center" width="33%">
-        <img src="https://img.icons8.com/fluency/48/chat.png" width="40"/><br/>
-        <b>AI Chat Assistant</b><br/>
-        <sub>Multi‑turn, context‑aware Q&A</sub>
+      <td width="33%" align="center">
+        <b>⚡ Speech & Vector Search</b><br/>
+        <sub>OpenWhisper audio transcription paired with Vector Database storage for contextual RAG search.</sub>
       </td>
-      <td align="center" width="33%">
-        <img src="https://img.icons8.com/fluency/48/search.png" width="40"/><br/>
-        <b>Smart Search</b><br/>
-        <sub>Fuzzy + token‑based across all data</sub>
+      <td width="33%" align="center">
+        <b>💬 Interactive AI Assistant</b><br/>
+        <sub>Multi-turn, context-aware chatbot querying workspace data and release notes in real time.</sub>
       </td>
     </tr>
   </table>
 </div>
 
----
-<!-- VIDEO DEMO -->
-## 🎥 Demo Video
-
-[![Watch Demo](https://img.shields.io/badge/▶%20Watch%20Demo%20Video-4285F4?style=for-the-badge&logo=google-drive&logoColor=white)](https://drive.google.com/file/d/1h4n77kILcHQfjhho2AdKir0g-NIZdGRN/view?usp=sharing)
-
-<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/2ab18be2-e2e1-4272-9bf6-eebdb7df93b9" />
-<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/ad81b1a4-0d95-48b2-95ee-30106bab9e0c" />
-<img width="959" height="538" alt="image" src="https://github.com/user-attachments/assets/cad479b2-3695-43eb-8240-8265189a9615" />
-<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/1d2f3c8a-642b-4876-9276-21f782caba12" />
-<img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/280fedb3-7ae7-4897-b434-5719c6febe84" />
+**Tech Stack**: `React 19` • `TypeScript` • `Spring AI / Node.js` • `Vector DB` • `PostgreSQL` • `OpenWhisper` • `Tailwind CSS`
 
 ---
 
-## ✨ Key Features
+## 🛠️ Tech Stack Matrix
 
-- 📥 **Upload transcripts** (`.vtt`, `.docx`, `.txt`) and get instant, structured meeting reports.
-- 🧠 **AI‑generated summaries** – Executive summary, technical details, speaker contributions, and Mermaid flowcharts.
-- 💬 **Integrated AI chatbot** – Ask questions about your meetings, releases, adapters, and workspace data.
-- 🔔 **Real‑time notifications** – Broadcasts when any admin creates/updates/deletes entities.
-- 🌓 **Dark mode** – Smooth, animated theme switching.
-- 📱 **Responsive design** – Optimised for desktop, tablet, and mobile.
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <h3>☕ Core & Enterprise Backend</h3>
+      <p>
+        <img src="https://img.shields.io/badge/Java_17+-ED8B00?style=flat-square&logo=openjdk&logoColor=white" />
+        <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white" />
+        <img src="https://img.shields.io/badge/Spring_Cloud-6DB33F?style=flat-square&logo=spring&logoColor=white" />
+        <img src="https://img.shields.io/badge/OIC_(Oracle_Integration)-F80000?style=flat-square&logo=oracle&logoColor=white" />
+        <img src="https://img.shields.io/badge/Microservices-00599C?style=flat-square&logo=autodesk&logoColor=white" />
+        <img src="https://img.shields.io/badge/Distributed_Tracing-FF6C37?style=flat-square&logo=postman&logoColor=white" />
+      </p>
+      <h3>🧠 AI / ML & Data Engineering</h3>
+      <p>
+        <img src="https://img.shields.io/badge/Spring_AI-6DB33F?style=flat-square&logo=spring&logoColor=white" />
+        <img src="https://img.shields.io/badge/RAG_Architectures-00F2FE?style=flat-square&logo=generative-ai&logoColor=black" />
+        <img src="https://img.shields.io/badge/Vector_Databases-412991?style=flat-square&logo=databricks&logoColor=white" />
+        <img src="https://img.shields.io/badge/OpenAI_API-412991?style=flat-square&logo=openai&logoColor=white" />
+        <img src="https://img.shields.io/badge/OpenWhisper-000000?style=flat-square&logo=openai&logoColor=white" />
+      </p>
+    </td>
+    <td valign="top" width="50%">
+      <h3>💾 Databases & Messaging</h3>
+      <p>
+        <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white" />
+        <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white" />
+        <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" />
+        <img src="https://img.shields.io/badge/Kafka-231F20?style=flat-square&logo=apachekafka&logoColor=white" />
+        <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=flat-square&logo=rabbitmq&logoColor=white" />
+      </p>
+      <h3>🎨 Modern Full-Stack & Tools</h3>
+      <p>
+        <img src="https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black" />
+        <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
+        <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" />
+        <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
+        <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
+      </p>
+    </td>
+  </tr>
+</table>
 
 ---
 
-## 🛠 Tech Stack
+## 🏛 Major Engineering Projects
 
-**Frontend**  
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react) 
-![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript) 
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite) 
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss) 
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-0055FF?logo=framer)
+<details>
+<summary><b>🏦 CentralBank Microservices — Enterprise Banking Infrastructure</b></summary>
+<br />
+Engineered a production-grade distributed banking system leveraging Spring Boot and Spring Cloud.
+<ul>
+  <li>Implemented Centralized Config Server, Eureka Service Discovery, API Gateway, and OpenFeign inter-service communication.</li>
+  <li>Built correlation-ID based distributed tracing for end-to-end request observability across all microservices.</li>
+  <li>Containerized services using Docker multi-environment setups (dev/qa/prod) with strict environment isolation.</li>
+</ul>
+</details>
 
-**AI / Backend**  
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?logo=openai) 
-![DeepSeek](https://img.shields.io/badge/DeepSeek-V4--Flash-0A0A0A?logo=deepseek) 
-![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs) 
-![Express](https://img.shields.io/badge/Express-5-000000?logo=express) 
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)
+<details>
+<summary><b>🛒 NavaRanga — Scalable E-Commerce Marketplace Platform</b></summary>
+<br />
+Full-stack multi-vendor marketplace featuring granular role-based management and recommendation engines.
+<ul>
+  <li>Integrated analytics dashboards for sellers offering real-time sales reporting and inventory management.</li>
+  <li>Designed optimized search filters, cart lifecycles, and admin governance controls.</li>
+</ul>
+</details>
+
+<details>
+<summary><b>💹 TradeXpert — Real-Time Crypto Trading Platform</b></summary>
+<br />
+Full-stack trading workspace featuring portfolio tracking, CoinGecko API market feeds, Spring Security 2FA, Razorpay/Stripe integrations, and Gemini API assistant integration.
+</details>
 
 ---
 
-## 🚀 Quick Start
+## 📈 Algorithmic & Problem Solving Metrics
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/your-org/briefly-frontend.git
-cd briefly-frontend
+<div align="center">
 
-# 2. Install dependencies
-npm install
+| Platform | Solved / Rating | Badges & Milestones |
+| :--- | :--- | :--- |
+| <b>LeetCode</b> | <b>305+ Solved</b> | Data Structures, Algorithms & Dynamic Programming |
+| <b>GeeksforGeeks</b> | <b>348+ Solved</b> | Core Java & System Design Fundamentals |
+| <b>CodeChef</b> | <b>155+ Solved</b> | <b>2★ Rated</b> Competitive Programmer |
 
-# 3. Set environment variables (see .env.example)
-echo "VITE_API_BASE_URL=http://localhost:4000/api" > .env.local
+</div>
 
-# 4. Start development server
-npm run dev
+---
+
+## 📊 Engineering Analytics
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=Sarthakverse&show_icons=true&theme=tokyonight&count_private=true&hide_border=true" height="170" />
+  <img src="https://github-readme-streak-stats.herokuapp.com?user=Sarthakverse&theme=tokyonight&hide_border=true" height="170" />
+</div>
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Sarthakverse&layout=compact&theme=tokyonight&hide_border=true&hide=html,css,scss" height="150" />
+</div>
+
+---
+
+<div align="center">
+  <sub>Designed with precision & engineered for performance • <b>Sarthak Rastogi</b></sub>
+</div>
